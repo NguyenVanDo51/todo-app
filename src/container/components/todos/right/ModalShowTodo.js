@@ -3,12 +3,14 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { Nav, Tab, Button, Modal as ModalBootStrap } from 'react-bootstrap';
 import toast from 'react-hot-toast';
-import { eachOfSeries } from 'async';
 import Carousel, { Modal, ModalGateway } from 'react-images';
 import { Download } from '../../../helpers';
-import { api_get_one_todo, api_update_todo, api_delete_todo } from '../../../api';
-import { Spin, EditableText } from '../../common/library';
+import { api_update_todo, api_delete_todo } from '../../../api';
+import { EditableText } from '../../common/library';
 import { PaserDatetimeLocalInput, PaserDatetime_H_M_D_M_Y } from '../../../helpers';
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import { CHANGE_LIST_TODO } from '../../../reducers/actions';
 
 class ModalShowTodo extends Component {
     constructor(props) {
@@ -67,43 +69,6 @@ class ModalShowTodo extends Component {
         const { is_show_modal_confirm } = this.state;
         this.setState({ is_show_modal_confirm: !is_show_modal_confirm });
     };
-
-    // // Lấy dữ liệu của todo
-    // get_todo = (is_load = true, cb = null) => {
-    //     const { todo_choose } = this.props;
-    //     if (is_load) this.set_loading(true);
-    //     api_get_one_todo({ id: todo_choose._id })
-    //         .then((res) => {
-    //             this.set_loading(false);
-    //             if (res) {
-    //                 if (res.todo) {
-    //                     const { input } = this.state;
-    //                     const input_t = { ...input };
-    //                     input_t.title = res.todo.title;
-    //                     if (res.todo.repeat.type) {
-    //                         this.setState({
-    //                             todo: res.todo,
-    //                             is_show_repeat_option: true,
-    //                             is_check_repeat: true,
-    //                             input: input_t,
-    //                         });
-    //                     } else {
-    //                         this.setState({
-    //                             todo: res.todo,
-    //                             is_show_repeat_option: false,
-    //                             is_check_repeat: false,
-    //                             input: input_t,
-    //                         });
-    //                     }
-    //                     if (cb) cb();
-    //                 }
-    //             }
-    //         })
-    //         .catch(() => {
-    //             toast.error('Đã có lỗi xảy ra vui lòng thử lại!', {});
-    //             this.set_loading(false);
-    //         });
-    // };
 
     // Show lặp lại
     handle_show_repeat_option = () => {
@@ -177,6 +142,7 @@ class ModalShowTodo extends Component {
     // Xử lý cập nhật 1 todo
     update_todo = (todo_t = null, handle_modal = true, is_show_toast = true) => {
         const { loading, todo } = this.state;
+        const { todos, dispatch } = this.props;
         if (todo.is_complete) {
             toast.dismiss();
             toast.error('Không thể chỉnh sửa công việc đã hoàn thành');
@@ -197,17 +163,30 @@ class ModalShowTodo extends Component {
         }
         if (loading) return;
         if (is_show_toast) this.set_loading(true);
+
+        if (is_show_toast) {
+            toast.dismiss();
+            toast.success('Đã lưu thay đổi');
+        }
+
+        if (handle_modal) handle_show_modal_option();
+
+        dispatch({
+            type: CHANGE_LIST_TODO,
+            payload: {
+                todos: todos.map((t) => {
+                    if (t._id === todo._id) {
+                        return { ...t, ...todo_params };
+                    }
+                    return todo;
+                }),
+            },
+        });
+        this.setState({ todo: {...todo, ...todo_params} });
+
         api_update_todo(todo._id, todo_params).then((res) => {
-            if (res.data) {
-                // this.get_todo(is_show_toast);
-                this.set_loading(false);
-                if (is_show_toast) {
-                    toast.dismiss();
-                    toast.success('Cập nhật thông tin thành công');
-                }
-                this.setState({ todo: res.data });
-                if (handle_modal) handle_show_modal_option();
-            } else {
+            if (!res) {
+                toast.dismiss();
                 toast.error('Đã xảy ra lỗi, vui lòng thử lại');
             }
             this.set_loading(false);
@@ -553,11 +532,11 @@ class ModalShowTodo extends Component {
     };
 
     render() {
-        const { handle_show_modal_option, todo_choose } = this.props;
-        const { todo, is_show_img_viewer, files_pending, input, note_t, photo_attach_view, loading, is_show_modal_confirm } = this.state;
+        const { handle_show_modal_option } = this.props;
+        const { todo, is_show_img_viewer, files_pending, input, note_t, photo_attach_view, is_show_modal_confirm } = this.state;
         return (
             <>
-                <Spin spin={loading}>
+                {/* <Spin spin={loading}> */}
                     {is_show_img_viewer ? (
                         <ModalGateway>
                             <Modal onClose={() => this.handle_show_img_viewer(null, false)}>
@@ -852,10 +831,14 @@ class ModalShowTodo extends Component {
                             </Button>
                         </ModalBootStrap.Footer>
                     </ModalBootStrap>
-                </Spin>
+                    {/* </Spin> */}
             </>
         );
     }
 }
 
-export default ModalShowTodo;
+const mapStateToProps = ({ state }) => ({
+    todos: state.todos,
+});
+
+export default withRouter(connect(mapStateToProps)(ModalShowTodo));

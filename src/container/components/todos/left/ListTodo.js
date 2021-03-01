@@ -125,16 +125,15 @@ class ListTodo extends Component {
 
     handle_delete_todo_category = () => {
         const { category_choose_id } = this.state;
-        const { history } = this.props;
+        const { history, categories_todo, dispatch } = this.props;
+
+        dispatch({ type: CHANGE_LIST_CATEGORY, payload: categories_todo.filter((category) => category._id !== category_choose_id) });
+        this.change_show_list_todo('task', 'Công việc hôm nay');
+        this.handle_show_modal_confirm_delete();
+        history.push('/app/task');
+
         api_delete_category_todo(category_choose_id).then((res) => {
-            this.handle_show_modal_confirm_delete();
-            if (res) {
-                console.log(res);
-                this.change_show_list_todo('task', 'Công việc hôm nay');
-                history.push('/app/task');
-                this.get_categories();
-                toast.success('Xóa danh sách tác vụ thành công', {});
-            } else {
+            if (!res) {
                 toast.error('Đã có lỗi xảy ra, xin vui lòng thử lại!', {});
             }
         });

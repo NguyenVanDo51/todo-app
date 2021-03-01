@@ -23,10 +23,6 @@ class ListTask extends Component {
     // Mở modal tùy chọn cho 1 todoyyy
     handle_show_modal_option = (todo) => {
         const { is_show_modal_opion } = this.state;
-        if (is_show_modal_opion) {
-            const { getTodo } = this.props;
-            getTodo();
-        }
         this.setState({ is_show_modal_opion: !is_show_modal_opion, todo_choose: todo });
     };
 
@@ -39,14 +35,13 @@ class ListTask extends Component {
         const { loading } = this.state;
         const { todos, dispatch } = this.props;
         if (loading) return;
-        // this.set_loading(true);
-
+        this.set_loading(true);
         dispatch({
             type: CHANGE_LIST_TODO,
             payload: {
                 todos: todos.map((todo) => {
                     if (todo._id === todo_id) {
-                        return { ...todo, todo_param };
+                        return { ...todo, ...todo_param };
                     }
                     return todo;
                 }),
@@ -54,13 +49,11 @@ class ListTask extends Component {
         });
 
         api_update_todo(todo_id, todo_param).then((res) => {
-            if (res) {
-                // const { getTodo } = this.props;
-                // this.set_loading(false);
-            } else {
+            if (!res) {
                 toast.dismiss();
                 toast.error('Đã xảy ra lỗi khi cập nhật thông tin công việc.');
             }
+            this.set_loading(false);
         });
     };
 
@@ -69,9 +62,9 @@ class ListTask extends Component {
         const { getTodo, todos, get_categories } = this.props;
         return (
             todos &&
-            todos.map((todo_item) =>
+            todos.map((todo_item, key) =>
                 todo_item.is_complete ? (
-                    <Suspense fallback={<div className="d-none">Loading...</div>} key={todo_item._id}>
+                    <Suspense fallback={<div className="d-none">Loading...</div>} key={`todo_item${key + 1000}`}>
                         <TodoItem
                             todo_item={todo_item}
                             getTodo={getTodo}
@@ -90,9 +83,9 @@ class ListTask extends Component {
         const { getTodo, todos, get_categories } = this.props;
         return (
             todos &&
-            todos.map((todo_item) =>
+            todos.map((todo_item, key) =>
                 !todo_item.is_complete ? (
-                    <Suspense fallback={<div className="d-none">Loading...</div>} key={todo_item._id}>
+                    <Suspense fallback={<div className="d-none">Loading...</div>} key={`todo_item${key + 2000}`}>
                         <TodoItem
                             todo_item={todo_item}
                             getTodo={getTodo}
@@ -113,7 +106,7 @@ class ListTask extends Component {
         return (
             <>
                 <div className="work_all_content_scoll">
-                    <Spin spin={loading}>
+                    {/* <Spin spin={loading}> */}
                         <div className="work_all_content_fitter">
                             <div className="container">{this.render_is_not_completed()}</div>
                         </div>
@@ -130,8 +123,9 @@ class ListTask extends Component {
                                 <div className="work_all_completed_content">{this.render_is_completed()}</div>
                             </div>
                         </div>
-                    </Spin>
+                    {/* </Spin> */}
                 </div>
+
                 {/* MODAL Tùy chọn cho 1 todo */}
                 {is_show_modal_opion && (
                     <Modal show={is_show_modal_opion} centered className="work_modals" onHide={() => {}}>

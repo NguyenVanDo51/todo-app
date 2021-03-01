@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { api_update_todo } from '../../../api';
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import { CHANGE_LIST_TODO } from '../../../reducers/actions';
 
 const renderTooltip = (props) => (
     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -17,16 +20,32 @@ const renderTooltipx = (props) => (
 
 const TodoItem = (props) => {
     const [loading, set_loading] = useState(false);
-    const { todo_item, getTodo, update_todo, handle_show_modal_option } = props;
+    const { todo_item, getTodo, update_todo, handle_show_modal_option, todos, dispatch } = props;
 
     // Thay đổi is_complete
     const handleChangIsComplete = (e) => {
-        if (loading) return;
-        set_loading(true);
-        api_update_todo(todo_item._id, { is_complete: e.target.checked ? 1 : 0 }).then(() => {
-            set_loading(false);
-            getTodo();
-        });
+        const todo_params = { is_complete: e.target.checked ? 1 : 0 };
+        if (todo_item.repeat && todo_item.repeat.type && e.target.checked) {
+            if (loading) return;
+            set_loading(true);
+
+            dispatch({
+                type: CHANGE_LIST_TODO,
+                payload: {
+                    todos: todos.map((todo) => {
+                        if (todo._id === todo_item._id) {
+                            return { ...todo, ...todo_params };
+                        }
+                        return todo;
+                    }),
+                },
+            });
+
+            api_update_todo(todo_item._id, todo_params).then(() => {
+                set_loading(false);
+                getTodo();
+            });
+        } else update_todo(todo_item._id, todo_params);
     };
 
     let is_time_out = null;
@@ -125,4 +144,8 @@ const TodoItem = (props) => {
     );
 };
 
-export default TodoItem;
+const mapStateToProps = ({ state }) => ({
+    todos: state.todos,
+});
+
+export default withRouter(connect(mapStateToProps)(TodoItem));
