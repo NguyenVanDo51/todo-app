@@ -1,0 +1,7 @@
+.chat-galery-container img {
+    width: 98px;
+    height: 98px;
+}
+.react-photo-gallery--gallery > div {
+    justify-content: center;
+}

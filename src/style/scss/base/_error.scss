@@ -1,0 +1,566 @@
+.app{
+._manager_error {
+    position: relative;
+    width: calc(100vw - 350px);
+    height: 100vh;
+
+    .container {
+        overflow: initial;
+    }
+    &_form {
+        position: relative;
+        padding-top: 30px;
+        border-bottom: 1px solid $color-custom-14;
+        padding-bottom: 30px;
+        padding-left: 15px;
+        padding-right: 15px;
+      
+        &_item {
+          position: relative;
+        }
+      
+        &_search {
+          input {
+            width: 100%;
+            background: $background-white;
+            border: 1px solid $color-custom-14;
+            border-radius: 4px;
+            padding: 8px 12px 8px 32px;
+            height: 40px;
+            line-height: 24px;
+            font-size: 14px;
+            color: $color-custom-7;
+            font-style: normal;
+            font-weight: normal;
+            outline: none;
+            &:focus {
+                border-color: $color-custom-8;
+              }
+              &::-webkit-input-placeholder {
+                color: $color-custom-6;
+            }
+          }
+      
+          position: relative;
+        }
+      
+        ._manager_error_btn {
+          position: absolute;
+          top: 0;
+      
+          i {
+            display: block;
+            width: 32px;
+            height: 39px;
+            margin: 0;
+            cursor: pointer;
+      
+            &:before {
+              content: "";
+              background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAQ+SURBVHgB7ZtRUtswEIY3gQce0xuYEzScIA4Mz6UnIJygcAKSE7Q9Qc0JAs/ARDlB6QmqI/DIA5N0d7KZpolky45WTlx9Mx5TyWM7v3dX2pUKEIlEIpFIpKG0ICCTyaTz9vbWob+Pjo5e+/3+K+w4YgKRGLPZbNButz/iP1M8EsulL3hovPYBr1UomoYdwrtAz8/PJMolLESpgkKx7s7OzjLYAbwJxMLcgt1SykJWNapbqK0FQldK8PQDqltMERkeo7pcbyuBHh8f08PDwzH+2QFZNB6fUaQXCExlgdByvuDpm8OlywCsYfFDV0eu7nw+77ZarR44uCbeY9Dr9e4gIJUEchDnlQIt/qB7/OoK3O5JYl2jWJd514UWqbRAT09PFwcHB+OcSxQeV1VjBsU0FGqYIxRZYD+Uu5USiAPyBMzuQC9OwdTF7VyeNcTTraVb43ESYqLZhnLQaJUY2pdf1Ys4sLjZkE7wb8xakvC7iONsQTzPsb3UiZTJoyWlsLBaE33XGFcVZwviSaCJG8l4wALcWLpvQRgngch6wOxamU+3ssHPUIaulC1MDCeBOLcyMYJw1GJFhQLxyJUaurKQ0392Y2XoIisSm8kXCoQTvtTS9R3CY7RYfMcLEKJQIHSvT4ZmXUdexAHbNOx3QQiXGJQY2hTUBM6yH9bb8CP2QAgXgTa+Dpr0L6gJFMhkuQkIkSuQLfjhFwvuXiuYXKy2IC1d5ykNWq+GgJTNxf47igSyZcu1WRa6dwIByRWIywkbIqGZJ1AfiaFNrOzh4mIbD+e1rlqwPFts0CgUCIfVqaE5hfpI1xskpx0uAhnnHdJZtAlaRQFD/KMVWRDCJdXILF25xXUJcInJ9kwFQjhVFNFaqKKXGrqOQ2X0XFX4vd5Oqcfp6Wl9ySpjq/sEqQszxrIrrn6IFuycBOIsWhu6Uqw2XoMwaD22NX+9MzVp5Mp4g3b7q2TAxntT3BlCiXfyibNA/KWUpXuMP8R7HGBxMkt3Jm09RNlcjL6YNrTT0DtmV/AC3yuzdGsIVA8vvfRMa+h4+plziYItlp55xwiJk+ZdF2qNvurmhQEUj2DZ+/v73fn5uQIHXIVZJYRI22x/GYDbMK/xeOF0QC/rOZyVd7hcmkLFCoG0SFttoGJ3o50eCchCCbNVQEmRtiqY8cpGH2ezkmZOy0vHkBOU0Sqz6XQqkvp428TJLudzE6eCxXYatfKMIeSspEpYkvdtwDwfoq9ZZV5ErkRWObLNcUKL5F2gJZxcdmlllotcFK/W44iGxXa9Ka+U3LtsigopkphA0oQSaW8FIkKItNcCEdIi7b1AhKRIjRCIkBKpMQIREiI1SiDCt0iNE4jwKVIjBSJ8idRYgQgfIjVaIKJIJORDXnrT+P1B/H8+bKWSq6Lcr/EWtMRgSSROBpG/kEh4zLl2FTEhuSs/EolEIpHIXvEHn8PCkbXGImsAAAAASUVORK5CYII=) no-repeat;
+              position: absolute;
+              background-size: 100%;
+              width: 18px;
+              height: 18px;
+              top: 50%;
+              transform: translateY(-50%);
+              right: 0;
+              left: 0;
+              margin: auto;
+            }
+          }
+        }
+      
+        &_item {
+          select {
+            width: 100%;
+            background: $background-white;
+            border: 1px solid $color-custom-14;
+            border-radius: 4px;
+            padding: 8px 12px;
+            height: 40px;
+            line-height: 20px;
+            font-size: 14px;
+            // color: $color-custom-6;
+            font-style: normal;
+            font-weight: normal;
+            outline: none;
+            margin: 0;
+            background-image: url(../imgs/down.png);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-repeat: no-repeat;
+            background-size: 10px;
+            background-position: 92% center;
+            &:focus {
+                border-color: $color-custom-8;
+              }
+          }
+          .react-datepicker__input-container{
+            position: relative;
+            &::before{
+              content: "\f133";
+              font-weight: 400;
+              font-family: 'Font Awesome 5 Pro';
+              font-size: 14px;
+              position: absolute;
+              z-index: 1;
+              top: 50%;
+              left: 10px;
+              transform: translateY(-50%);
+            }
+            input{
+              width: 100%;
+              background: $color-white;
+              border: 1px solid $color-custom-14;
+              border-radius: 4px;
+              padding: 8px;
+              height: 40px;
+              line-height: 20px;
+              font-size: 14px;
+              color: $color-custom-7;
+              font-style: normal;
+              font-weight: normal;
+              outline: none;
+              margin: 0;
+              background-image: url(../imgs/down.png);
+              -webkit-appearance: none;
+              -moz-appearance: none;
+              appearance: none;
+              background-repeat: no-repeat;
+              background-size: 10px;
+              background-position: 92% center;
+              padding-left: 30px;
+              position: relative;
+              cursor: pointer;
+              &:focus {
+                  border-color: $color-custom-8;
+                }
+            }
+          }
+      
+          input[type="date"] {
+            width: 100%;
+            background: $color-white;
+            border: 1px solid $color-custom-14;
+            border-radius: 4px;
+            padding: 8px;
+            height: 40px;
+            line-height: 20px;
+            font-size: 14px;
+            color: $color-custom-7;
+            font-style: normal;
+            font-weight: normal;
+            outline: none;
+            margin: 0;
+            &:focus {
+                border-color: $color-custom-8;
+              }
+          }
+        }
+      
+        &_btn {
+          background: $base-hover-background;
+          border-radius: 4px;
+          color: $color-white;
+          padding: 8px 14px;
+          line-height: 24px;
+          cursor: pointer;
+          text-align: center;
+          font-size: 13px;
+          display: inline-block;
+      
+          &:hover {
+            opacity: .9;
+          }
+        }
+      }
+      &_content {
+        position: relative;
+        padding-top: 15px;
+      
+        .container {
+          padding-left: 15px;
+          padding-right: 15px;
+        }
+      }
+      ._manager_error_content{
+        label {
+            font-style: normal;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 24px;
+            color: $color-custom-39;
+            margin: 0;
+            display: block;
+          }
+      }
+      ._manager_error_contentx {
+        position: relative;
+        padding-top: 8px;
+        padding-bottom: 40px;
+        height: calc(100vh - 205px);
+        overflow: hidden;
+        overflow-y: auto;
+        padding-right: 5px;
+      
+        ._error_itemx {
+          position: relative;
+          padding: 12px 0;
+          border-bottom: 1px solid $color-custom-14;
+          &:last-child{
+              border: unset;
+          }
+          &:hover {
+            background: $color-custom-25;
+        }
+      
+          ._stt {
+            position: relative;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 14px;
+            line-height: 24px;
+            padding: 8px 0;
+            text-align: center;
+          }
+      
+          ._fb_item {
+            position: relative;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 14px;
+            line-height: 24px;
+            padding: 8px 0;
+            text-align: left;
+          }
+        }
+      }
+      
+      ._fb_item._fb_email {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      
+      ._manager_error_contentx ._error_itemx {
+        ._error_status_active {
+          background: $color-custom-29;
+          border-radius: 4px;
+          display: block;
+          color: $background-white;
+          font-size: 12px;
+          line-height: 14px;
+          padding: 3px 10px;
+          text-align: center;
+          min-width: 87px;
+          max-width: 87px;
+          margin: auto;
+        }
+      
+        ._error_status_no {
+          background: $color-custom-64;
+          border-radius: 4px;
+          display: block;
+          color: $background-white;
+          font-size: 10px;
+          line-height: 14px;
+          padding: 3px 10px;
+          text-align: center;
+          min-width: 87px;
+          max-width: 87px;
+          margin: auto;
+        }
+        ._error_status_done {
+            background: $color-custom-77;
+            border-radius: 4px;
+            display: block;
+            color: $background-white;
+            font-size: 10px;
+            line-height: 14px;
+            padding: 3px 10px;
+            text-align: center;
+            min-width: 87px;
+            max-width: 87px;
+            margin: auto;
+        }
+      }
+    }
+    ._error_right {
+        position: relative;
+        border-left: 1px solid $color-custom-14;
+        height: 100%;
+        
+        ._error_right_info {
+            padding-top: 26px;
+            border-bottom: 1px solid $color-custom-14;
+            padding-bottom: 16px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+      
+        ._error_right_info {
+          label {
+            font-style: normal;
+            font-weight: normal;
+            font-size: 13px;
+            line-height: 24px;
+            color: $color-custom-67;
+            display: block;
+            margin-bottom: 5px;
+            white-space: nowrap;
+          }
+      
+          ._error_right_name {
+            font-style: normal;
+            font-weight: 500;
+            font-size: 13px;
+            line-height: 24px;
+            color: $color-black;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
+        }
+      
+        ._error_right_btn {
+          position: relative;
+          text-align: center;
+      
+          label {
+            font-style: normal;
+            font-weight: normal;
+            font-size: 12px;
+            line-height: 16px;
+            color: $base-hover-background;
+            margin: 0;
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+          }
+      
+          ._error_right_btn_done {
+            font-style: normal;
+            font-weight: normal;
+            font-size: 11px;
+            line-height: 14px;
+            text-align: center;
+            color: $color-custom-29;
+            border: 1px solid $color-custom-29;
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 5px;
+          }
+        }
+        ._error_right_chat {
+            height: calc(100vh - 101px);
+            width: 100%;
+            display: flex;
+            flex-flow: column nowrap;
+          }
+          
+          ._error_right_message_view:before {
+            position: absolute;
+            bottom: 0;
+            border-top: 1px solid $color-custom-27;
+            content: "";
+            z-index: 3;
+            width: 100%;
+          }
+          
+          ._error_right_chat ._error_overlay {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 100%;
+            background: $background-white;
+            z-index: -1;
+            contain: strict;
+          }
+          
+          ._error_right_message_view {
+            flex: 1 0 auto;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+          }
+          
+          ._error_right_chat_container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            flex: 1 1 auto;
+            transition: .2s ease-out;
+            contain: layout style size;
+            bottom: 0;
+          }
+          
+          ._error_right_chat_scroll {
+            height: 100%;
+            background: $background-white;
+            overflow-y: scroll;
+            overflow-x: hidden;
+          }
+      }
+      ._error_chat_item {
+        position: relative;
+        margin-bottom: 15px;
+      
+        ._error_chat_img {
+            position: absolute;
+            float: left;
+            overflow: hidden;
+            bottom: 0;
+      
+          img {
+            width: 20px;
+            height: 20px;
+            border-radius: 100%;
+            object-fit: cover;
+          }
+        }
+      
+        ._error_chat_cont {
+          display: inline-block;
+          float: left;
+          margin-left: 30px;
+      
+          h2 {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            line-height: 14px;
+      
+            /* identical to box height */
+            color: $color-black;
+            margin: 0;
+            margin-bottom: 3px;
+      
+            span {
+              font-size: 12px;
+              line-height: 14px;
+      
+              /* identical to box height */
+              color: $color-custom-78;
+              font-weight: normal;
+            }
+          }
+        }
+      
+        ._error_chat_des {
+             border-radius: 6px 6px 6px 0px;
+            display: inline-block;
+            background: $color-custom-79;
+            padding: 14px 23px 12px 27px;
+            font-size: 14px;
+            line-height: 19px;
+        }
+        &._error_chat_reply{
+            ._error_chat_cont{
+                margin-right: 30px;
+                margin-left: 0;
+                float: right;
+                h2{
+                    text-align: right;
+                }
+            }
+            ._error_chat_img{
+                float: right;
+                right: 0;
+            }
+            ._error_chat_des{
+                padding: 14px 23px 14px 14px;
+                background: $color-custom-17;
+                color: $color-white;
+                border-radius: 6px;
+            }
+        }
+      }
+      ._error_right_chat_view {
+        padding: 35px 15px;
+        position: relative;
+        ._error_chat_imgages {
+            position: relative;
+          
+            img {
+              border-radius: 10px;
+            }
+          }
+    }
+    ._error_toolbar {
+        position: relative;
+    }
+    
+    ._error_tools_box {
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        line-height: 20px;
+        border-bottom: 1px solid $color-custom-14;
+        border-top: 1px solid $color-custom-14;
+    }
+    
+    ._error_tools_box ._tools_btn {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        margin-right: 20px;
+        height: 24px;
+        width: 24px;
+        align-items: center;
+    }
+    
+    ._error_tools_box ._tools_btn input {
+        display: none;
+    }
+    
+    ._error_tools_box ._tools_btn label {
+        margin: 0;
+        display: block;
+        cursor: pointer;
+        font-size: 18px;
+        color: $color-custom-22;
+        &:hover{
+            color: $color-custom-29;
+        }
+    }
+    
+    ._error_tools_chat {
+        position: relative;
+    }
+    
+    ._error_tools_chat textarea {
+        padding: 12px 16px;
+        width: 100%;
+        border: none;
+        outline: none;
+        font-size: 14px;
+        line-height: 16px;
+        min-height: 124px;
+        padding-right: 80px;
+    }
+    
+    ._error_tool_btn {
+        position: absolute;
+        right: 15px;
+        bottom: 15px;
+        background: $base-hover-background;
+        border-radius: 4px;
+        color: $color-white;
+        font-size: 14px;
+        line-height: 24px;
+        padding: 8px 16px;
+        cursor: pointer;
+        &:hover{
+            opacity: .9;
+        }
+    }
+}

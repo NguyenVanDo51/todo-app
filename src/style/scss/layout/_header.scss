@@ -1,0 +1,106 @@
+._app {
+    height: 100%;
+    width: 100%;
+    background: $background-white;
+
+    ._app_login {
+        // background:url(../imgs/bg_login.png) no-repeat;
+        // background-size: 100%;
+        // background-position: center center;
+        ._app_login_boxs {
+            position: relative;
+            max-width: 478px;
+            margin: auto;
+            padding: 72px 0 0;
+        }
+        ._app_box {
+            border: 1px solid $color-custom-19;
+            box-sizing: border-box;
+            box-shadow: 0px 16px 41px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background: $background-white;
+            animation: fadeIn 0.3s ease-in;
+            -webkit-animation: fadeIn 0.3s ease-in;
+            -moz-animation: fadeIn 0.3s ease-in;
+            -ms-animation: fadeIn 0.3s ease-in;
+            -o-animation: fadeIn 0.3s ease-in;
+
+            .v2_bota_header_blo_app {
+                position: relative;
+                background: $color-custom-1;
+            }
+
+            ._app_logo {
+                position: relative;
+                padding: 3.5px 14px;
+
+                img {
+                    width: 20px;
+                    height: 17.5px;
+                }
+            }
+        }
+        .v2_bota_header_blo_app_resetpass {
+            position: relative;
+            text-align: center;
+            padding-bottom: 30px;
+
+            a {
+                color: $color-custom-4;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 14px;
+                line-height: 24px;
+                &:hover {
+                    color: $base-hover-color;
+                }
+            }
+        }
+    }
+}
+
+.app {
+    .main {
+        .nav_container {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 40px;
+            width: 100vw;
+            background-color: #4d6fe5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0px 30px;
+
+            .top_bar_btn {
+                background-color: transparent;
+                border: none;
+                color: #fff;
+                outline: none;
+
+                &:hover {
+                    border-radius: 3px;
+                    background-color: rgba(0, 0, 0, 0.1);
+                }
+            }
+            i.fas {
+                color: #fff;
+                font-size: 17px;
+                padding: 0 5px;
+                cursor: pointer;
+            }
+
+			.right {
+				display: flex;
+				align-items: center;
+
+				.user_btn {
+					height: 27px;
+					padding: 1px 6px;
+					width: 36px;
+				}
+			}
+        }
+    }
+}

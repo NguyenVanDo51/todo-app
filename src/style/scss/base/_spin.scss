@@ -1,0 +1,63 @@
+/*------ Component spin ------*/
+.spin {
+    // height: 100vh;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: column nowrap;
+    flex-flow: column nowrap;
+    display: flex;
+    -webkit-box-orient: vertical;
+    position: relative;
+    .overlay {
+        position: absolute;
+        background: #ffffff87;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        cursor: progress;
+        z-index: 9999;
+        &.hide {
+            display: none;
+        }
+        .overlay_icon {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            background-color: rgba(255, 255, 255, .7);
+            .loader {
+                border: 3px solid #ccc;
+                border-top: 3px solid green;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                animation: spin 2s linear infinite;
+                position: absolute;
+                top: 0;
+                right: 0;
+                left: 0;
+                bottom: 0;
+                margin: auto;
+            }
+            .txt {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                padding-top: 55px;
+                font-size: 13px;
+                color: #666;
+                user-select: none;
+            }
+        }
+    }
+}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+/*------ Component spin -------*/

@@ -1,0 +1,32 @@
+export const R_PROFILE = 'R_PROFILE';
+export const R_TOTAL_ONLINE = 'R_TOTAL_ONLINE';
+export const R_LOGIN = 'R_LOGIN';
+export const R_FORM_LOGIN = 'R_FORM_LOGIN';
+
+/* ------Token------- */
+export const R_TOKEN = 'R_TOKEN';
+
+/* ------FORM FILTER------- */
+export const SELECT_FIELD = 'SELECT_FIELD';
+export const UNSELECT_FIELD = 'UNSELECT_FIELD';
+export const ADD_FILTER = 'ADD_FILTER';
+export const REMOVE_FILTER = 'REMOVE_FILTER';
+export const CLEAR_FILTERS = 'CLEAR_FILTERS';
+export const CHANGE_FILTER_FIELD = 'CHANGE_FILTER_FIELD';
+export const CHANGE_FILTER_OPERATOR = 'CHANGE_FILTER_OPERATOR';
+export const CHANGE_FILTER_VALUE = 'CHANGE_FILTER_VALUE';
+export const DATA_FILTER = 'DATA_FILTER';
+
+export const SHOW_CONFIRM_LOGOUT_MODAL = 'SHOW_CONFIRM_LOGOUT_MODAL';
+
+/* ---------- Show list Todo -----------*/
+export const SHOW_CONTENT_TODOS = 'SHOW_CONTENT_TODOS';
+export const CHANGE_LIST_TODO = 'CHANGE_LIST_TODO';
+export const CHANGE_LIST_TODO_NAME = 'CHANGE_LIST_TODO_NAME';
+export const CHANGE_LIST_CATEGORY = 'CHANGE_LIST_CATEGORY';
+export const CHANGE_LOADING_TODO = 'CHANGE_LOADING_TODO';
+export const CHANGE_SORT_BY = 'CHANGE_SORT_BY';
+export const CHANGE_SEARCH_TODO = 'CHANGE_SEARCH_TODO';
+export const CHANGE_AMOUNT_TODO_COMPLETED = 'CHANGE_AMOUNT_TODO_COMPLETED';
+
+export const CHANGE_SHOW_NAV_LEFT = 'CHANGE_SHOW_NAV_LEFT';
