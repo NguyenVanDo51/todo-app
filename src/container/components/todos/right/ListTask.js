@@ -1,8 +1,11 @@
 import React, { Component, Suspense } from 'react';
+import { withRouter } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import toast from 'react-hot-toast';
+import { connect } from 'react-redux';
 import { api_update_todo } from '../../../api';
 import { Spin } from '../../common/library';
+import { CHANGE_LIST_TODO } from '../../../reducers/actions';
 
 const TodoItem = React.lazy(() => import('./TodoItem'));
 const ModalShowTodo = React.lazy(() => import('./ModalShowTodo'));
@@ -34,16 +37,29 @@ class ListTask extends Component {
     // Xử lý cập nhật 1 todo
     update_todo = (todo_id, todo_param) => {
         const { loading } = this.state;
+        const { todos, dispatch } = this.props;
         if (loading) return;
-        this.set_loading(true);
+        // this.set_loading(true);
+
+        dispatch({
+            type: CHANGE_LIST_TODO,
+            payload: {
+                todos: todos.map((todo) => {
+                    if (todo._id === todo_id) {
+                        return { ...todo, todo_param };
+                    }
+                    return todo;
+                }),
+            },
+        });
+
         api_update_todo(todo_id, todo_param).then((res) => {
             if (res) {
-                const { getTodo } = this.props;
-                getTodo();
-                this.set_loading(false);
+                // const { getTodo } = this.props;
+                // this.set_loading(false);
             } else {
                 toast.dismiss();
-                toast.error('Đã xảy ra lỗi. Vui lòng thử lại.');
+                toast.error('Đã xảy ra lỗi khi cập nhật thông tin công việc.');
             }
         });
     };
@@ -134,4 +150,8 @@ class ListTask extends Component {
     }
 }
 
-export default ListTask;
+const mapStateToProps = ({ state }) => ({
+    todos: state.todos,
+});
+
+export default withRouter(connect(mapStateToProps)(ListTask));
