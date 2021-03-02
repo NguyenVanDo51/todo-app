@@ -35,6 +35,7 @@ const ModalCreateCategory = ({ is_show_modal_category, category_choose_id, handl
             set_todo_name('');
             set_display_color_picker(false);
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [is_show_modal_category]);
 
     const handle_update_todo_category = () => {
