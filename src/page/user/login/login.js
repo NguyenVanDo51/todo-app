@@ -13,8 +13,8 @@ class Login extends Component {
 
     componentDidMount() {
         const {history} = this.props;
-        auth.getTokenCb((e, token) => {
-            if (token) history.push('/app')
+        auth.getInfo().then((res) => {
+            if (res) history.push('/app')
         })
     }
 

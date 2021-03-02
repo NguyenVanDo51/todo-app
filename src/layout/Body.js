@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { user_logout_api } from '../container/api';
@@ -14,11 +14,13 @@ const auth = new AuthService();
 const Body = (props) => {
     const history = useHistory();
     const dispatch = useDispatch();
+    const [is_login, setIsLogin] = useState(false);
 
     useEffect(() => {
         auth.getInfo().then((res) => {
             if (res) {
                 dispatch({ type: R_PROFILE, payload: { name: res.name, email: res.email } });
+                setIsLogin(true);
             } else {
                 history.push('/login');
             }
@@ -30,10 +32,14 @@ const Body = (props) => {
             <div className="app">
                 <div className="_app_box">
                     <div className="main">
-                        <NavTop />
-                        <div className="app_content">
-                            <TodoCatogory {...props} />
-                        </div>
+                        {is_login && (
+                            <>
+                                <NavTop />
+                                <div className="app_content">
+                                    <TodoCatogory {...props} />
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

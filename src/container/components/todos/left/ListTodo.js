@@ -5,13 +5,7 @@ import toast from 'react-hot-toast';
 import { Modal, Nav, Button } from 'react-bootstrap';
 import { api_get_todos, api_delete_category_todo, api_get_category_todo } from '../../../api';
 import { Spin } from '../../common/library';
-import {
-    CHANGE_LIST_TODO,
-    CHANGE_LIST_TODO_NAME,
-    CHANGE_LOADING_TODO,
-    CHANGE_SEARCH_TODO,
-    CHANGE_LIST_CATEGORY,
-} from '../../../reducers/actions';
+import { CHANGE_LIST_TODO, CHANGE_LIST_TODO_NAME, CHANGE_LOADING_TODO, CHANGE_SEARCH_TODO, CHANGE_LIST_CATEGORY } from '../../../reducers/actions';
 import ListTodoItem from './ListTodoItem';
 
 const ModalCreateCategory = React.lazy(() => import('./ModalCreateCategory'));
@@ -67,32 +61,15 @@ class ListTodo extends Component {
         }
         p.sort_by = sort.sort_by;
         p.reverse = sort.reverse;
-        if (title !== 'added') {
-            dispatch({ type: CHANGE_LIST_TODO_NAME, payload: { todo_category_name: title } });
-        } else {
-            categories_todo &&
-                categories_todo.every((category) => {
-                    // eslint-disable-next-line no-underscore-dangle
-                    if (category._id === caregory_id) {
-                        dispatch({ type: CHANGE_LIST_TODO_NAME, payload: { todo_category_name: category.name } });
-                        return false;
-                    }
-                    return true;
-                });
-        }
+        dispatch({ type: CHANGE_LIST_TODO_NAME, payload: { todo_category_name: title } });
         dispatch({ type: CHANGE_LOADING_TODO, payload: { loading_todo: true } });
         dispatch({ type: CHANGE_SEARCH_TODO, payload: { search_todo: '' } });
-        api_get_todos(caregory_id, p)
-            .then((data) => {
-                if (data) {
-                    dispatch({ type: CHANGE_LIST_TODO, payload: { todos: data } });
-                }
-                dispatch({ type: CHANGE_LOADING_TODO, payload: { loading_todo: false } });
-            })
-            .catch(() => {
-                toast.error('Xảy ra lỗi trong quá trình load danh sách tác vụ!', {});
-                dispatch({ type: CHANGE_LOADING_TODO, payload: { loading_todo: false } });
-            });
+        api_get_todos(caregory_id, p).then((data) => {
+            if (data) {
+                dispatch({ type: CHANGE_LIST_TODO, payload: { todos: data } });
+            }
+            dispatch({ type: CHANGE_LOADING_TODO, payload: { loading_todo: false } });
+        });
     };
 
     // mở modal thêm
@@ -128,7 +105,7 @@ class ListTodo extends Component {
         const { history, categories_todo, dispatch } = this.props;
 
         dispatch({ type: CHANGE_LIST_CATEGORY, payload: categories_todo.filter((category) => category._id !== category_choose_id) });
-        this.change_show_list_todo('task', 'Công việc hôm nay');
+        this.change_show_list_todo('task', 'Tất cả công việc');
         this.handle_show_modal_confirm_delete();
         history.push('/app/task');
 
@@ -141,50 +118,45 @@ class ListTodo extends Component {
 
     categories_render = () => {
         const { menuActiveTodo, categories_todo } = this.props;
+        console.log('categories_todo', categories_todo);
         if (categories_todo.length > 0) {
-            return categories_todo.map((category, index) => (
-                <ListTodoItem
-                    handle_show_modal_confirm_delete={this.handle_show_modal_confirm_delete}
-                    handle_show_edit_modal={this.handle_show_edit_modal}
-                    menuActiveTodo={menuActiveTodo}
-                    get_categories={this.get_categories}
-                    category={category}
-                    // eslint-disable-next-line no-underscore-dangle
-                    key={category._id}
-                    change_show_list_todo={this.change_show_list_todo}
-                />
-            ));
+            return categories_todo.map((category, index) => {
+                if (index > 0)
+                    return (
+                        <ListTodoItem
+                            handle_show_modal_confirm_delete={this.handle_show_modal_confirm_delete}
+                            handle_show_edit_modal={this.handle_show_edit_modal}
+                            menuActiveTodo={menuActiveTodo}
+                            get_categories={this.get_categories}
+                            category={category}
+                            key={`category_render_${index}`}
+                            change_show_list_todo={this.change_show_list_todo}
+                        />
+                    );
+                return null;
+            });
         }
         return null;
     };
 
     render() {
-        const {
-            is_show_create_modal,
-            is_show_edit_modal,
-            category_choose_id,
-            is_show_modal_confirm_delete,
-            loading,
-        } = this.state;
+        const { is_show_create_modal, is_show_edit_modal, category_choose_id, is_show_modal_confirm_delete, loading } = this.state;
         const { menuActiveTodo, categories_todo, is_show_nav_left } = this.props;
 
         return (
             <>
                 <div className={is_show_nav_left ? 'work_list' : 'work_list hide'}>
                     <Nav className="flex-column">
-                        <Nav.Item onClick={() => this.change_show_list_todo('task', 'Công việc hôm nay')}>
+                        <Nav.Item onClick={() => this.change_show_list_todo('task', 'Tất cả công việc')}>
                             <Link to="/app/task" className={menuActiveTodo === 'task' ? 'nav-link active' : 'nav-link'}>
-                                <i className="work-all" /> Hôm nay
-                                {/* <span className="_app_work_count">{categories_todo[0] ? categories_todo[0].amount_todo : 0}</span> */}
+                                <i className="work-all" /> Tất cả công việc
+                                <span className="_app_work_count">{categories_todo[0]  && (categories_todo[0].amount_all || 0)}</span>
                             </Link>
                         </Nav.Item>
                         <Nav.Item onClick={() => this.change_show_list_todo('important', 'Công việc quan trọng')}>
-                            <Link
-                                to="/app/important"
-                                className={menuActiveTodo === 'important' ? 'nav-link active' : 'nav-link'}
-                            >
+                            <Link to="/app/important" className={menuActiveTodo === 'important' ? 'nav-link active' : 'nav-link'}>
                                 <i className="fal fa-star" /> Quan trọng
-                                {/* <span className="_app_work_count">{categories_todo[2] ? categories_todo[2].amount_todo : 0}</span> */}
+                                <span className="_app_work_count">{categories_todo[0] && (categories_todo[0].amount_important || 0)}</span>
                             </Link>
                         </Nav.Item>
                     </Nav>
@@ -213,12 +185,7 @@ class ListTodo extends Component {
                 </Suspense>
 
                 {/* MODAL XÁC NHẬN XÓA TODO */}
-                <Modal
-                    size="sm"
-                    show={is_show_modal_confirm_delete}
-                    onHide={this.handle_show_modal_confirm_delete}
-                    backdrop="static"
-                >
+                <Modal size="sm" show={is_show_modal_confirm_delete} onHide={this.handle_show_modal_confirm_delete} backdrop="static">
                     <Modal.Body>Bạn có chắc chắn muốn xóa</Modal.Body>
                     <Modal.Footer style={{ padding: '0.4rem' }}>
                         <Button variant="secondary margin-right-8" size="sm" onClick={this.handle_show_modal_confirm_delete}>

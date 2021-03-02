@@ -51,7 +51,12 @@ class FormLogin extends Component {
                 [
                     (callback) => {
                         auth.login({ email, password }).then((data) => {
-                            callback(null, data);
+                            if (data) {
+                                callback(null, data);
+                            } else {
+                                toast.error('Tên tài khoản hoặc mật khẩu không chính xác!');
+                                this.setState({ inputs: { ...inputs, password: '' } });
+                            }
                         });
                     },
                     (data, callback) => {
@@ -65,7 +70,7 @@ class FormLogin extends Component {
                 }
             );
         } else if (option === 2) {
-            if (password.length < 9) {
+            if (password.length < 8) {
                 toast.dismiss();
                 toast.error('Mật khẩu cần tối thiểu 8 kí tự.');
             } else {
@@ -78,7 +83,7 @@ class FormLogin extends Component {
                             toast.dismiss();
                             toast.error('Email này đã được đăng ký rồi.');
                         }
-                        // this.setOption(1);
+                        this.setOption(1);
                     });
                 } else {
                     toast.dismiss();
@@ -98,11 +103,7 @@ class FormLogin extends Component {
                 <div className="app_login">
                     <div className="container">
                         <header>
-                            <div
-                                className={
-                                    'header-headings ' + (option === 1 ? 'sign-in' : option === 2 ? 'sign-up' : 'forgot')
-                                }
-                            >
+                            <div className={'header-headings ' + (option === 1 ? 'sign-in' : option === 2 ? 'sign-up' : 'forgot')}>
                                 <span>Đăng nhập</span>
                                 <span>Đăng ký</span>
                                 <span>Quên mật khẩu</span>
@@ -120,11 +121,7 @@ class FormLogin extends Component {
                             </li>
                         </ul>
                         <form className="account-form" onSubmit={this.onSubmit}>
-                            <div
-                                className={
-                                    'account-form-fields ' + (option === 1 ? 'sign-in' : option === 2 ? 'sign-up' : 'forgot')
-                                }
-                            >
+                            <div className={'account-form-fields ' + (option === 1 ? 'sign-in' : option === 2 ? 'sign-up' : 'forgot')}>
                                 <input
                                     id="email"
                                     name="email"

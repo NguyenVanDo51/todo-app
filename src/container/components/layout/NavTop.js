@@ -1,16 +1,27 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { waterfall } from 'async';
 import AuthService from '../../core/auth/AuthService';
 import { CHANGE_SHOW_NAV_LEFT } from '../../reducers/actions';
+import { useOnClickOutside } from '../../helpers/useOnClickOutside';
 
 const auth = new AuthService();
 
 const NavTop = (props) => {
     const history = useHistory();
     const dispatch = useDispatch();
+    const [is_show_user_option, setShowUserOption] = useState(false);
+    const [is_show_notify_box, setShowNotifyBox] = useState(false);
+    const ref_user_option = useRef();
+    const ref_show_notify = useRef();
 
+    useOnClickOutside(ref_user_option, () => {
+        setShowUserOption(false);
+    });
+    useOnClickOutside(ref_show_notify, () => {
+        setShowNotifyBox(false);
+    });
     const { is_show_nav_left } = useSelector(({ state }) => ({
         is_show_nav_left: state.is_show_nav_left,
     }));
@@ -76,6 +87,7 @@ const NavTop = (props) => {
                     aria-expanded="false"
                     aria-haspopup="listbox"
                     className="top_bar_btn notifications_btn"
+                    onClick={() => setShowNotifyBox(true)}
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24">
                         <path
@@ -85,33 +97,47 @@ const NavTop = (props) => {
                         ></path>
                     </svg>
                 </button>
-                <button type="button" className="top_bar_btn user_btn">
+                <button type="button" className="top_bar_btn user_btn" onClick={() => setShowUserOption(true)}>
                     <div className="div_avatar_default" />
                 </button>
-                {/* <button
-                    onClick={() => {
-                        // user_logout_api();
-                        waterfall(
-                            [
-                                (callback) => {
-                                    auth.logout().then(() => {
-                                        callback(null);
-                                    });
-                                },
-                                (callback) => {
-                                    auth.removeToken(() => {
-                                        callback(null);
-                                    });
-                                },
-                            ],
-                            () => {
-                                history.push('/login');
-                            }
-                        );
-                    }}
-                >
-                    Logout
-                </button> */}
+                <div className={is_show_user_option ? 'user_option active' : 'user_option'} ref={ref_user_option}>
+                    {/* <div className="user_option_item">Cài đặt</div> */}
+                    <div
+                        className="user_option_item"
+                        onClick={() => {
+                            waterfall(
+                                [
+                                    (callback) => {
+                                        auth.logout().then(() => {
+                                            callback(null);
+                                        });
+                                    },
+                                    (callback) => {
+                                        auth.removeToken(() => {
+                                            callback(null);
+                                        });
+                                    },
+                                ],
+                                () => {
+                                    history.push('/login');
+                                }
+                            );
+                        }}
+                    >
+                        Đăng xuất
+                    </div>
+                </div>
+                <div className={is_show_notify_box ? 'user_option active notify_box' : 'user_option notify_box'} ref={ref_show_notify}>
+                    <div className="title_notify">
+                        <h5>Thông báo</h5>
+                    </div>
+                    <div className="body_notify">
+                        <p className="text-muted">Bạn chưa có thông báo nào</p>
+                    </div>
+                    <div className="footet_notify">
+                        <span>Xem tất cả</span>
+                    </div>
+                </div>
             </div>
         </div>
     );

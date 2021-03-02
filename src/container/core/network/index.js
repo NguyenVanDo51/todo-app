@@ -37,7 +37,7 @@ export async function GET(url, params) {
     } catch (error) {
         try {
             if (!isEmpty(error) && (error.response.status === 403 || error.response.status === 401)) {
-                toast.error('Phiên đăng nhập đã hết hạn!', {});
+                console.log('Bạn chưa đăng nhập hoặc phiên đãng nhập đã hết hạn!', {});
                 localforage.removeItem('todo_token');
             }
             if (!isEmpty(error) && error.response.status === 500) {
@@ -68,7 +68,8 @@ export async function POST(url, params) {
     } catch (error) {
         try {
             if (!isEmpty(error) && (error.response.status === 403 || error.response.status === 401)) {
-                toast.error('Phiên đăng nhập đã hết hạn!', {});
+                // toast.error('Bạn chưa đăng nhập hoặc phiên đãng nhập đã hết hạn!', {});
+                console.log('Bạn chưa đăng nhập hoặc phiên đãng nhập đã hết hạn!', {});
                 localforage.removeItem('todo_token');
             }
             if (!isEmpty(error) && error.response.status === 500) {
@@ -97,7 +98,7 @@ export async function POST_DOWNLOAD(url, params) {
     } catch (error) {
         try {
             if (!isEmpty(error) && error.response.status === 403) {
-                toast.error('Phiên đăng nhập đã hết hạn!', {});
+                console.log('Bạn chưa đăng nhập hoặc phiên đãng nhập đã hết hạn!', {});
                 window.location.href = '/login';
             }
         } catch (e) {

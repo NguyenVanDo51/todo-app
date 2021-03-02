@@ -32,7 +32,7 @@ const ListTodoItem = ({ handle_show_modal_confirm_delete, change_show_list_todo,
     };
 
     return (
-        <Nav.Item onClick={(e) => change_show_list_todo(category._id, 'added', e)}>
+        <Nav.Item onClick={(e) => change_show_list_todo(category._id, category.name, e)}>
             <Nav.Link
               role="button"
               onClick={handle_push_url}

@@ -55,11 +55,10 @@ class TodoLayout extends Component {
         api_get_category_todo({
             uid: profile.uid,
         })
-            .then((res) => {
-                if (res.categories) {
-                    dispatch({ type: CHANGE_LIST_CATEGORY, payload: { categories_todo: res.categories } });
-                    dispatch({ type: CHANGE_AMOUNT_TODO_COMPLETED, payload: res.categories[0].amount_todo || 0 });
-                }
+            .then((data) => {
+                console.log('data', data);
+                dispatch({ type: CHANGE_LIST_CATEGORY, payload: data });
+                dispatch({ type: CHANGE_AMOUNT_TODO_COMPLETED, payload: data[0].amount_all || 0 });
                 // this.set_loading(false);
             })
             .catch(() => {
@@ -107,7 +106,7 @@ class TodoLayout extends Component {
     };
 
     handle_sort = (s = null, r = 'asc') => {
-        const { todos, sort, dispatch } = this.props;
+        const { sort, dispatch } = this.props;
         const sort_t = { ...sort };
         if (s === null && r === null) {
             sort_t.sort_by = '';
@@ -118,30 +117,9 @@ class TodoLayout extends Component {
                 sort_t.sort_by = s;
             }
             sort_t.reverse = r;
-            // this.getTodo(sort_t);
-            // Thực hiện sắp xếp todos
-
-            let todos_sorted = { ...todos };
-            todos_sorted = todos.sort((a, b) => {
-                switch(s) {
-                    case 'is_important': 
-                        return Number(a.is_important) - Number(a.is_important);
-                    
-                    case 'title':
-                        return a.title;
-
-                    case 'time_out':
-                        return Number(a.time_out) - Number(b.time_out);
-
-                    case 'created_at':
-                        return Number(a.created_at) - Number(b.created_at);
-
-                    default:
-                        return false;
-                }
-            })
-            dispatch({ type: CHANGE_LIST_TODO, payload: { todos: r === 'asc' ? todos_sorted : todos_sorted.sort() } });
+            this.getTodo(sort_t);
         }
+        this.set_show_sort();
         dispatch({ type: CHANGE_SORT_BY, payload: { sort: sort_t } });
     };
 
@@ -150,7 +128,7 @@ class TodoLayout extends Component {
         let title = '';
         switch (category) {
             case 'task':
-                title = 'Công việc hôm nay';
+                title = 'Tất cả công việc';
                 break;
             case 'completed':
                 title = 'Công việc đã hoàn thành';
@@ -158,9 +136,7 @@ class TodoLayout extends Component {
             default:
                 api_get_one_category_todo(category).then((data) => {
                     if (data) {
-                        if (data) {
-                            dispatch({ type: CHANGE_LIST_TODO_NAME, payload: { todo_category_name: data.name } });
-                        }
+                        dispatch({ type: CHANGE_LIST_TODO_NAME, payload: { todo_category_name: data.name } });
                     }
                 });
                 break;
@@ -214,7 +190,7 @@ class TodoLayout extends Component {
         const { input, loading } = this.state;
         let input_t = { ...input };
         const { category, dispatch, todos } = this.props;
-        if (loading) return;
+        // if (loading) return;
         this.setShowModalCreateTodo(false);
         switch (category) {
             case 'task':
@@ -230,27 +206,12 @@ class TodoLayout extends Component {
                 break;
         }
         if (input_t.title) {
-            this.set_loading(true);
             if (input_t.time_out && typeof input_t.time_out === 'string') input_t.time_out = new Date(input_t.time_out).getTime();
-
+            input_t.created_at = new Date().getTime();
+            this.setState({ input: { title: '', time_out: '' } });
             dispatch({ type: CHANGE_LIST_TODO, payload: { todos: [...todos, input_t] } });
-
-            api_create_todo(input_t)
-                .then((res) => {
-                    this.set_loading(false);
-                    input_t = { ...input };
-                    input_t.title = '';
-                    input_t.time_out = '';
-                    this.setState({ input: input_t });
-                })
-                .catch(() => {
-                    toast.error('Có lỗi xảy ra, vui lòng thử lại!', {});
-                    input_t = { ...input };
-                    input_t.title = '';
-                    input_t.time_out = '';
-                    this.setState({ input: input_t });
-                    this.set_loading(false);
-                });
+            dispatch({ type: CHANGE_SORT_BY, payload: { sort: { sort_by: '', reverse: '' } } });
+            api_create_todo(input_t);
         } else {
             this.todo_name_ref.current.focus();
         }
@@ -325,107 +286,111 @@ class TodoLayout extends Component {
         const { todo_category_name, search_todo, category, todos, loading_todo, sort } = this.props;
         return (
             <>
-                {/* <Spin spin={loading_todo}> */}
                 <div className="work_content">
-                    <div className="container">
-                        <div className="work_all_content">
-                            <div className="container">
-                                <div className="work_all_content_title">
-                                    <h2>{todo_category_name}</h2>
-                                </div>
-                                <div className="work_toolbar">
-                                    {/* PHAN TIM KIEM */}
-                                    <div className="work_content_search">
-                                        <div className="work_content_search_input">
-                                            <input
-                                                type="search"
-                                                name="search"
-                                                placeholder="Tìm kiếm công việc"
-                                                value={search_todo}
-                                                onChange={this.handleSearchTodo}
-                                                onKeyUp={this.handleSearchTodo}
-                                            />
-                                        </div>
-                                        <div className="work_content_search_btn">
-                                            <i className="icon-search" />
-                                        </div>
+                    <Spin spin={loading_todo}>
+                        <div className="container">
+                            <div className="work_all_content">
+                                <div className="container">
+                                    <div className="work_all_content_title">
+                                        <h2>{todo_category_name || 'Tất cả công việc' }</h2>
                                     </div>
-                                    <div className="work_toolbar_right">
-                                        <div className="work_add_button mx-1" onClick={() => this.setShowModalCreateTodo(true)}>
-                                            <svg width="20" height="20" viewBox="0 0 24 24">
-                                                <g fill="none" fillRule="evenodd" transform="translate(4 3)">
-                                                    <mask id="jd4FBg" fill="#fff">
-                                                        <path d="M9 8h7a.5.5 0 1 1 0 1H9v7a.5.5 0 1 1-1 0V9H1a.5.5 0 0 1 0-1h7V1a.5.5 0 0 1 1 0v7z"></path>
-                                                    </mask>
-                                                    <g mask="url(#jd4FBg)">
-                                                        <path fill="currentColor" d="M-4-3h24v24H-4z"></path>
-                                                    </g>
-                                                </g>
-                                            </svg>
-                                            <span className="work_sort_span">Thêm</span>
-                                        </div>
-
-                                        {/* PHAN SAP XEP */}
-                                        <div className="work_sort">
-                                            <div className="work_sort_btn" onClick={this.set_show_sort}>
-                                                <i className="fas fa-sort-alt" />
-                                                <span className="work_sort_span">Sắp xếp</span>
+                                    <div className="work_toolbar">
+                                        {/* PHAN TIM KIEM */}
+                                        <div className="work_content_search">
+                                            <div className="work_content_search_input">
+                                                <input
+                                                    type="search"
+                                                    name="search"
+                                                    placeholder="Tìm kiếm công việc"
+                                                    value={search_todo}
+                                                    onChange={this.handleSearchTodo}
+                                                    onKeyUp={this.handleSearchTodo}
+                                                />
                                             </div>
+                                            <div className="work_content_search_btn">
+                                                <i className="icon-search" />
+                                            </div>
+                                        </div>
+                                        <div className="work_toolbar_right">
+                                            {category && category !== 'task' && category !== 'important' && (
+                                                <div className="work_add_button mx-1" onClick={() => this.setShowModalCreateTodo(true)}>
+                                                    <svg width="20" height="20" viewBox="0 0 24 24">
+                                                        <g fill="none" fillRule="evenodd" transform="translate(4 3)">
+                                                            <mask id="jd4FBg" fill="#fff">
+                                                                <path d="M9 8h7a.5.5 0 1 1 0 1H9v7a.5.5 0 1 1-1 0V9H1a.5.5 0 0 1 0-1h7V1a.5.5 0 0 1 1 0v7z"></path>
+                                                            </mask>
+                                                            <g mask="url(#jd4FBg)">
+                                                                <path fill="currentColor" d="M-4-3h24v24H-4z"></path>
+                                                            </g>
+                                                        </g>
+                                                    </svg>
+                                                    <span className="work_sort_span">Thêm</span>
+                                                </div>
+                                            )}
 
-                                            {is_show_sort ? (
-                                                <div className="work_sort_content active" ref={this.ref_sort}>
-                                                    <div className="work_sort_fitter">
-                                                        <div
-                                                            className={sort.sort_by === 'is_important' ? 'work_sort_fitter_item active' : 'work_sort_fitter_item'}
-                                                            onClick={() => this.handle_sort('is_important', 'asc')}
-                                                        >
-                                                            <i className="far fa-star" /> Việc quan trọng
-                                                        </div>
-                                                        <div
-                                                            className={sort.sort_by === 'time_out' ? 'work_sort_fitter_item active' : 'work_sort_fitter_item'}
-                                                            onClick={() => this.handle_sort('time_out', 'asc')}
-                                                        >
-                                                            <i className="far fa-calendar-minus" /> Ngày đến hạn
-                                                        </div>
-                                                        <div
-                                                            className={sort.sort_by === 'title' ? 'work_sort_fitter_item active' : 'work_sort_fitter_item'}
-                                                            onClick={() => this.handle_sort('title', 'asc')}
-                                                        >
-                                                            <i className="far fa-sort-alpha-down-alt" /> Bảng chữ cái
-                                                        </div>
-                                                        <div
-                                                            className={sort.sort_by === 'created_at' ? 'work_sort_fitter_item active' : 'work_sort_fitter_item'}
-                                                            onClick={() => this.handle_sort('created_at', 'asc')}
-                                                        >
-                                                            <i className="far fa-calendar-plus" /> Ngày tạo
+                                            {/* PHAN SAP XEP */}
+                                            <div className="work_sort">
+                                                <div className="work_sort_btn" onClick={this.set_show_sort}>
+                                                    <i className="fas fa-sort-alt" />
+                                                    <span className="work_sort_span">Sắp xếp</span>
+                                                </div>
+
+                                                {is_show_sort ? (
+                                                    <div className="work_sort_content active" ref={this.ref_sort}>
+                                                        <div className="work_sort_fitter">
+                                                            <div
+                                                                className={
+                                                                    sort.sort_by === 'is_important' ? 'work_sort_fitter_item active' : 'work_sort_fitter_item'
+                                                                }
+                                                                onClick={() => this.handle_sort('is_important', 'asc')}
+                                                            >
+                                                                <i className="far fa-star" /> Việc quan trọng
+                                                            </div>
+                                                            <div
+                                                                className={sort.sort_by === 'time_out' ? 'work_sort_fitter_item active' : 'work_sort_fitter_item'}
+                                                                onClick={() => this.handle_sort('time_out', 'asc')}
+                                                            >
+                                                                <i className="far fa-calendar-minus" /> Ngày đến hạn
+                                                            </div>
+                                                            <div
+                                                                className={sort.sort_by === 'title' ? 'work_sort_fitter_item active' : 'work_sort_fitter_item'}
+                                                                onClick={() => this.handle_sort('title', 'asc')}
+                                                            >
+                                                                <i className="far fa-sort-alpha-down-alt" /> Bảng chữ cái
+                                                            </div>
+                                                            <div
+                                                                className={sort.sort_by === 'created_at' ? 'work_sort_fitter_item active' : 'work_sort_fitter_item'}
+                                                                onClick={() => this.handle_sort('created_at', 'asc')}
+                                                            >
+                                                                <i className="far fa-calendar-plus" /> Ngày tạo
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ) : null}
+                                                ) : null}
+                                            </div>
                                         </div>
                                     </div>
+                                    {this.render_sort_option()}
                                 </div>
-                                {this.render_sort_option()}
                             </div>
+                            {/* PHAN CONG VIEC CHINH */}
+                            <Suspense fallback={<div className="d-none">Loading...</div>}>
+                                <ListTask todos={todos} getTodo={this.getTodo} category={category} get_categories={this.get_categories} />
+                            </Suspense>
+                            {/* PHAN FOOTER */}
+                            <Suspense fallback={null}>
+                                <ModalCreateTodo
+                                    is_show_modal={is_show_modal_create_todo}
+                                    handle_show_modal_create_todo={() => this.setShowModalCreateTodo(false)}
+                                    todo_name_ref={this.todo_name_ref}
+                                    input={input}
+                                    handle_change_input={this.handle_change_input}
+                                    handle_create_todo={this.handle_create_todo}
+                                />
+                            </Suspense>
                         </div>
-                        {/* PHAN CONG VIEC CHINH */}
-                        <Suspense fallback={<div className="d-none">Loading...</div>}>
-                            <ListTask todos={todos} getTodo={this.getTodo} category={category} get_categories={this.get_categories} />
-                        </Suspense>
-                        {/* PHAN FOOTER */}
-                        <Suspense fallback={null}>
-                            <ModalCreateTodo
-                                is_show_modal={is_show_modal_create_todo}
-                                handle_show_modal_create_todo={() => this.setShowModalCreateTodo(false)}
-                                todo_name_ref={this.todo_name_ref}
-                                input={input}
-                                handle_change_input={this.handle_change_input}
-                                handle_create_todo={this.handle_create_todo}
-                            />
-                        </Suspense>
-                    </div>
+                    </Spin>
                 </div>
-                {/* </Spin> */}
             </>
         );
     }

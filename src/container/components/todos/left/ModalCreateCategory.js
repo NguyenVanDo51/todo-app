@@ -46,16 +46,16 @@ const ModalCreateCategory = ({
             }).then((category) => {
                 waterfall([
                     (callback) => {
-                        change_show_list_todo(category._id, 'added');
+                        change_show_list_todo(category._id, category.name);
                         callback(null);
                     },
                     () => {
                         history.push(`/app/${category._id}`);
                     },
                 ]);
-                dispatch({ type: CHANGE_LIST_CATEGORY, payload: [...categories_todo, category] });
+                dispatch({ type: CHANGE_LIST_CATEGORY, payload: [...categories_todo, {...category, amount_todo: 0}] });
                 set_loading(false);
-                toast.success('Đã tạo tên danh sách thành công.');
+                toast.success('Tạo danh sách thành công.');
                 set_todo_name('');
                 handle_show_modal_category();
             });

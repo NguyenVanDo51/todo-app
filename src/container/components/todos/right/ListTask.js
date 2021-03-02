@@ -33,7 +33,7 @@ class ListTask extends Component {
     // Xử lý cập nhật 1 todo
     update_todo = (todo_id, todo_param) => {
         const { loading } = this.state;
-        const { todos, dispatch } = this.props;
+        const { todos, dispatch, get_categories } = this.props;
         if (loading) return;
         this.set_loading(true);
         dispatch({
@@ -55,6 +55,8 @@ class ListTask extends Component {
             }
             this.set_loading(false);
         });
+
+        get_categories();
     };
 
     // render các task đã hoàn thành
@@ -100,29 +102,33 @@ class ListTask extends Component {
     };
 
     render() {
-        const { category, getTodo } = this.props;
+        const { category, getTodo, todos } = this.props;
         const { todo_choose, is_show_modal_opion, loading } = this.state;
 
         return (
             <>
                 <div className="work_all_content_scoll">
                     {/* <Spin spin={loading}> */}
-                        <div className="work_all_content_fitter">
-                            <div className="container">{this.render_is_not_completed()}</div>
-                        </div>
-                        {/* HIEN THI DANH SACH TODO */}
-                        <div className="work_all_completed">
-                            <div className="container">
-                                {category !== 'completed' ? (
-                                    <div className="work_all_completed_title">
+                    <div className="work_all_content_fitter">
+                        <div className="container">{this.render_is_not_completed()}</div>
+                    </div>
+                    {/* HIEN THI DANH SACH TODO */}
+                    <div className="work_all_completed">
+                        <div className="container">
+                            {category !== 'completed' ? (
+                                <div className="work_all_completed_title">
+                                    {todos.length > 0 ? (
                                         <h2>
                                             Công việc đã hoàn thành <i className="blo caret-down" />
                                         </h2>
-                                    </div>
-                                ) : null}
-                                <div className="work_all_completed_content">{this.render_is_completed()}</div>
-                            </div>
+                                    ) : (
+                                        <h2>Chưa có công việc nào được thêm</h2>
+                                    )}
+                                </div>
+                            ) : null}
+                            <div className="work_all_completed_content">{this.render_is_completed()}</div>
                         </div>
+                    </div>
                     {/* </Spin> */}
                 </div>
 

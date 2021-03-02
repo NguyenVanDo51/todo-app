@@ -168,9 +168,6 @@ class ModalShowTodo extends Component {
             toast.dismiss();
             toast.success('Đã lưu thay đổi');
         }
-
-        if (handle_modal) handle_show_modal_option();
-
         dispatch({
             type: CHANGE_LIST_TODO,
             payload: {
@@ -178,18 +175,21 @@ class ModalShowTodo extends Component {
                     if (t._id === todo._id) {
                         return { ...t, ...todo_params };
                     }
-                    return todo;
+                    return t;
                 }),
             },
         });
-        this.setState({ todo: {...todo, ...todo_params} });
 
+        this.setState({ todo: {...todo, ...todo_params} });
+        if (handle_modal) handle_show_modal_option();
         api_update_todo(todo._id, todo_params).then((res) => {
+            if (!handle_modal) {
+                this.set_loading(false);
+            }
             if (!res) {
                 toast.dismiss();
                 toast.error('Đã xảy ra lỗi, vui lòng thử lại');
             }
-            this.set_loading(false);
         });
     };
 
