@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import toast from 'react-hot-toast';
 import { connect } from 'react-redux';
-import { Spin } from '../../../components/common/library';
+// import { Spin } from '../../../components/common/library';
 import { api_update_todo } from '../../../api';
 import { CHANGE_LIST_TODO } from '../../../reducers/actions';
 
@@ -102,7 +102,7 @@ class ListTask extends Component {
     };
 
     render() {
-        const { category, getTodo, todos, loading } = this.props;
+        const { category, getTodo, todos } = this.props;
         const { todo_choose, is_show_modal_opion } = this.state;
 
         return (
