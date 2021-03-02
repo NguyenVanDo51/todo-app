@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { HashRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Body from '../layout/Body';
 import Login from '../page/user/login/login';
@@ -16,14 +16,14 @@ class TRouter extends Component {
 
     render() {
         return (
-            <HashRouter>
+            <BrowserRouter>
                 <>
                     <Route exact path="/" component={Intro} />
                     <Route exact path="/login" component={Login} />
                     {/* <Route exact path="/app" component={Body} /> */}
                     <Route exact path="/app/:id?" component={Body} />
                 </>
-            </HashRouter>
+            </BrowserRouter>
         );
     }
 }

@@ -27,13 +27,14 @@ const ListTodoItem = ({ handle_show_modal_confirm_delete, change_show_list_todo,
       e.stopPropagation();
     };
 
-    const handle_push_url = () => {
+    const handle_push_url = (e) => {
       history.push(`/app/${category._id}`);
     };
 
     return (
         <Nav.Item onClick={(e) => change_show_list_todo(category._id, category.name, e)}>
             <Nav.Link
+              // href={`/app/${category._id}`}
               role="button"
               onClick={handle_push_url}
               className={menuActiveTodo === category._id ? ' active' : ''}

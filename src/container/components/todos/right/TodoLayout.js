@@ -149,7 +149,7 @@ class TodoLayout extends Component {
                 break;
         }
         dispatch({ type: CHANGE_LIST_TODO_NAME, payload: { todo_category_name: title } });
-        this.getTodo();
+        // this.getTodo();
         document.addEventListener('mousedown', this.handleClickOutside);
     }
 
