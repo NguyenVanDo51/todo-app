@@ -118,7 +118,6 @@ class ListTodo extends Component {
 
     categories_render = () => {
         const { menuActiveTodo, categories_todo } = this.props;
-        console.log('categories_todo', categories_todo);
         if (categories_todo.length > 0) {
             return categories_todo.map((category, index) => {
                 if (index > 0)
@@ -181,6 +180,7 @@ class ListTodo extends Component {
                         handle_show_modal_category={this.handle_show_edit_modal}
                         get_categories={this.get_categories}
                         category_choose_id={category_choose_id}
+                        categories_todo={categories_todo}
                     />
                 </Suspense>
 

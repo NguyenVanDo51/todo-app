@@ -38,7 +38,6 @@ const ModalCreateCategory = ({
     const handle_create_todo_category = () => {
         if (todo_name) {
             set_loading(true);
-            
             api_create_category_todo({
                 uid: profile.uid,
                 name: todo_name,

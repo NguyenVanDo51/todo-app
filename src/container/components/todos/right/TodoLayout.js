@@ -93,7 +93,7 @@ class TodoLayout extends Component {
         };
         if (is_search_value) p.search = search_todo;
         if (is_load) this.set_loading(true);
-        api_get_todos(category, p).then((data) => {
+        api_get_todos(category || 'task', p).then((data) => {
             if (data) {
                 if (todo_t !== null) {
                     this.setState({ todo: todo_t });
@@ -106,20 +106,27 @@ class TodoLayout extends Component {
     };
 
     handle_sort = (s = null, r = 'asc') => {
-        const { sort, dispatch } = this.props;
+        const { sort, dispatch, todos } = this.props;
+        if (sort.sort_by && sort.sort_by === s) {
+            this.set_show_sort(false);
+            return;
+        };
+        if (s === null) {
+            if (r && sort.reverse !== r) {
+                dispatch({ type: CHANGE_LIST_TODO, payload: { todos: [...todos].reverse() } });
+                dispatch({ type: CHANGE_SORT_BY, payload: { sort: { ...sort, reverse: r } } });
+                return;
+            }
+        }
         const sort_t = { ...sort };
+        sort_t.sort_by = s || '';
+        sort_t.reverse = r || '';
         if (s === null && r === null) {
-            sort_t.sort_by = '';
-            sort_t.reverse = '';
             this.getTodo();
         } else {
-            if (s) {
-                sort_t.sort_by = s;
-            }
-            sort_t.reverse = r;
             this.getTodo(sort_t);
         }
-        this.set_show_sort();
+        this.set_show_sort(false);
         dispatch({ type: CHANGE_SORT_BY, payload: { sort: sort_t } });
     };
 
@@ -154,7 +161,7 @@ class TodoLayout extends Component {
 
     handleClickOutside = (event) => {
         if (this.ref_sort && this.ref_sort.current && !this.ref_sort.current.contains(event.target)) {
-            this.set_show_sort();
+            this.set_show_sort(false);
         }
     };
 
@@ -209,9 +216,17 @@ class TodoLayout extends Component {
             if (input_t.time_out && typeof input_t.time_out === 'string') input_t.time_out = new Date(input_t.time_out).getTime();
             input_t.created_at = new Date().getTime();
             this.setState({ input: { title: '', time_out: '' } });
-            dispatch({ type: CHANGE_LIST_TODO, payload: { todos: [...todos, input_t] } });
             dispatch({ type: CHANGE_SORT_BY, payload: { sort: { sort_by: '', reverse: '' } } });
-            api_create_todo(input_t);
+            api_create_todo(input_t).then((res) => {
+                if (res) {
+                    dispatch({
+                        type: CHANGE_LIST_TODO,
+                        payload: {
+                            todos: [...todos, { ...res.data }],
+                        },
+                    });
+                }
+            });
         } else {
             this.todo_name_ref.current.focus();
         }
@@ -276,9 +291,8 @@ class TodoLayout extends Component {
         return null;
     };
 
-    set_show_sort = () => {
-        const { is_show_sort } = this.state;
-        this.setState({ is_show_sort: !is_show_sort });
+    set_show_sort = (value = false) => {
+        this.setState({ is_show_sort: value });
     };
 
     render() {
@@ -292,7 +306,7 @@ class TodoLayout extends Component {
                             <div className="work_all_content">
                                 <div className="container">
                                     <div className="work_all_content_title">
-                                        <h2>{todo_category_name || 'Tất cả công việc' }</h2>
+                                        <h2>{todo_category_name || 'Tất cả công việc'}</h2>
                                     </div>
                                     <div className="work_toolbar">
                                         {/* PHAN TIM KIEM */}
@@ -330,7 +344,7 @@ class TodoLayout extends Component {
 
                                             {/* PHAN SAP XEP */}
                                             <div className="work_sort">
-                                                <div className="work_sort_btn" onClick={this.set_show_sort}>
+                                                <div className="work_sort_btn" onClick={() => this.set_show_sort(true)}>
                                                     <i className="fas fa-sort-alt" />
                                                     <span className="work_sort_span">Sắp xếp</span>
                                                 </div>
