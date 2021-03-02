@@ -32,7 +32,7 @@ const ModalCreateCategory = ({
             todo_name_ref.current.focus();
         }
         return set_display_color_picker(false);
-    }, [is_show_modal_category]);
+    }, [is_show_modal_category, todo_name_ref]);
 
     // Tạo mới 1 category todo
     const handle_create_todo_category = () => {

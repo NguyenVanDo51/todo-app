@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
-import { user_logout_api } from '../container/api';
 import AuthService from '../container/core/auth/AuthService';
 import { R_PROFILE } from '../container/reducers/actions';
-import localforage from 'localforage';
-import { waterfall } from 'async';
 import NavTop from '../container/components/layout/NavTop';
 import TodoCatogory from '../page/todos/TodoCategory';
 
@@ -25,6 +22,7 @@ const Body = (props) => {
                 history.push('/login');
             }
         });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

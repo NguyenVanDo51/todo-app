@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { waterfall } from 'async';
 import AuthService from '../../../core/auth/AuthService';
-import localForage from 'localforage';
 import toast from 'react-hot-toast';
 import { connect } from 'react-redux';
-import { R_PROFILE } from '../../../reducers/actions';
 
 const auth = new AuthService();
 
@@ -45,7 +43,7 @@ class FormLogin extends Component {
     onSubmit = (e) => {
         const { inputs, option } = this.state;
         const { email, password, repeat_password } = inputs;
-        const { dispatch, history } = this.props;
+        const { history } = this.props;
         if (option === 1) {
             waterfall(
                 [

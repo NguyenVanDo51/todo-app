@@ -5,14 +5,14 @@ import { isEmpty } from 'lodash';
 import localforage from 'localforage';
 import { URL_API } from '../config';
 
-function serialize(obj) {
-    return `?${Object.keys(obj)
-        .reduce((a, k) => {
-            if (obj[k]) a.push(`${k}=${encodeURIComponent(obj[k])}`);
-            return a;
-        }, [])
-        .join('&')}`;
-}
+// function serialize(obj) {
+//     return `?${Object.keys(obj)
+//         .reduce((a, k) => {
+//             if (obj[k]) a.push(`${k}=${encodeURIComponent(obj[k])}`);
+//             return a;
+//         }, [])
+//         .join('&')}`;
+// }
 
 async function getToken() {
     return localforage.getItem('todo_token');

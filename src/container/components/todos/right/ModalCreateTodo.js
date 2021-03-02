@@ -13,7 +13,7 @@ const ModalCreateTodo = ({
         if(todo_name_ref.current) {
             todo_name_ref.current.focus();
         }
-    }, [is_show_modal]);
+    }, [is_show_modal, todo_name_ref]);
 
     return (
         <Modal show={is_show_modal} onHide={handle_show_modal_create_todo} centered className="work_modals">

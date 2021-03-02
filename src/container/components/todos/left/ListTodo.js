@@ -45,7 +45,7 @@ class ListTodo extends Component {
 
     // Get list todo
     change_show_list_todo = (caregory_id, title) => {
-        const { dispatch, menuActiveTodo, sort, categories_todo } = this.props;
+        const { dispatch, menuActiveTodo, sort } = this.props;
         if (menuActiveTodo === caregory_id) return;
         const p = {};
         switch (caregory_id) {

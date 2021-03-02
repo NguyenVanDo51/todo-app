@@ -194,7 +194,7 @@ class TodoLayout extends Component {
 
     // Gọi API tạo mới todo
     handle_create_todo = () => {
-        const { input, loading } = this.state;
+        const { input } = this.state;
         let input_t = { ...input };
         const { category, dispatch, todos } = this.props;
         // if (loading) return;

@@ -4,7 +4,6 @@ import { Modal } from 'react-bootstrap';
 import toast from 'react-hot-toast';
 import { connect } from 'react-redux';
 import { api_update_todo } from '../../../api';
-import { Spin } from '../../common/library';
 import { CHANGE_LIST_TODO } from '../../../reducers/actions';
 
 const TodoItem = React.lazy(() => import('./TodoItem'));
@@ -103,7 +102,7 @@ class ListTask extends Component {
 
     render() {
         const { category, getTodo, todos } = this.props;
-        const { todo_choose, is_show_modal_opion, loading } = this.state;
+        const { todo_choose, is_show_modal_opion } = this.state;
 
         return (
             <>

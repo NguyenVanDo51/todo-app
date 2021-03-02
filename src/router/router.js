@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import Body from '../layout/Body';
 import Login from '../page/user/login/login';
 import Intro from '../page/intro/Introduction';
-import { CHANGE_AMOUNT_TODO_COMPLETED } from '../container/reducers/actions';
 
 class TRouter extends Component {
     constructor(props) {
