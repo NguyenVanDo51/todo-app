@@ -5,7 +5,7 @@ import AuthService from '../../../core/auth/AuthService';
 import toast from 'react-hot-toast';
 import { connect } from 'react-redux';
 import { Spinner } from 'react-bootstrap';
-import { LOADING_FULLSCREEN } from '../../../reducers/actions'
+// import { LOADING_FULLSCREEN } from '../../../reducers/actions'
 
 const auth = new AuthService();
 
@@ -50,7 +50,7 @@ class FormLogin extends Component {
     onSubmit = (e) => {
         const { inputs, option } = this.state;
         const { email, password, repeat_password } = inputs;
-        const { history, dispatch } = this.props;
+        const { history } = this.props;
         this.setLoading(true);
         if (option === 1) {
             waterfall(

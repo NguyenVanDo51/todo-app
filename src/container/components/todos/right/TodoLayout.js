@@ -2,7 +2,7 @@ import React, { Component, Suspense } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import toast from 'react-hot-toast';
-import { api_create_todo, api_get_todos, api_delete_todo, api_get_category_todo, api_get_one_category_todo } from '../../../api';
+import { api_get_todos, api_delete_todo, api_get_category_todo } from '../../../api';
 import { Spin } from '../../common/library';
 import {
     CHANGE_LIST_TODO,
@@ -11,7 +11,6 @@ import {
     CHANGE_LOADING_TODO,
     CHANGE_SORT_BY,
     CHANGE_AMOUNT_TODO_COMPLETED,
-    CHANGE_LIST_TODO_NAME,
 } from '../../../reducers/actions';
 
 const ListTask = React.lazy(() => import('./ListTask'));

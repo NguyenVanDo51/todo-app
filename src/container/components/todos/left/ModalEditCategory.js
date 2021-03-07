@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { Modal, Button } from 'react-bootstrap';
 import { SketchPicker } from 'react-color';
 import { Spin } from '../../common/library';
-import { api_edit_category_todo, api_get_one_category_todo } from '../../../api';
+import { api_edit_category_todo } from '../../../api';
 import { CHANGE_LIST_CATEGORY } from '../../../reducers/actions';
 
 const ModalCreateCategory = ({ is_show_modal_category, category_choose, handle_show_modal_category, categories_todo }) => {
@@ -27,7 +27,7 @@ const ModalCreateCategory = ({ is_show_modal_category, category_choose, handle_s
                     set_todo_color(category_choose.color);
                     set_color_default(category_choose.color);
                 // }
-                // set_loading(false);
+                set_loading(false);
             // });
         }
 
