@@ -6,6 +6,8 @@ export const R_FORM_LOGIN = 'R_FORM_LOGIN';
 /* ------Token------- */
 export const R_TOKEN = 'R_TOKEN';
 
+export const LOADING_FULLSCREEN = 'LOADING_FULLSCREEN';
+
 /* ------FORM FILTER------- */
 export const SELECT_FIELD = 'SELECT_FIELD';
 export const UNSELECT_FIELD = 'UNSELECT_FIELD';

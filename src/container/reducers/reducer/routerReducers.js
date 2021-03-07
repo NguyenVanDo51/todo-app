@@ -4,6 +4,7 @@ const initialState = {
     is_show_nav_left: true,
     show_list_todo: '',
     todo_category_name: 'Danh sách công việc',
+    loading_fullscreen: false,
     /**---------------LIST TODO---------------*/
     todos: [],
     sort: {
@@ -14,7 +15,7 @@ const initialState = {
     amount_todo_not_complete: 0,
 
     /**---------------LIST CATEGORY---------------*/
-    categories_todo: [],
+    categories_todo: [{ amount_all: 0, amount_important: 0 }],
     loading_todo: false,
     /**---------------END---------------*/
 };
@@ -22,6 +23,10 @@ const initialState = {
 const routerReducers = (state = initialState, { type, payload } = {}) => {
     let states = state;
     switch (type) {
+        case Types.LOADING_FULLSCREEN:
+            states = { ...state, loading_fullscreen: payload };
+            break;
+
         case Types.SHOW_CONFIRM_LOGOUT_MODAL:
             states = { ...state, show_confirm_logout: payload.show_confirm_logout };
             break;
@@ -39,6 +44,7 @@ const routerReducers = (state = initialState, { type, payload } = {}) => {
             break;
 
         case Types.CHANGE_LIST_CATEGORY:
+            console.log('categories_todo', payload);
             states = { ...state, categories_todo: payload };
             break;
 

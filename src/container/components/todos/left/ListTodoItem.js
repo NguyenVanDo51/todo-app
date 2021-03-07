@@ -18,12 +18,12 @@ const ListTodoItem = ({ handle_show_modal_confirm_delete, change_show_list_todo,
     };
 
     const handle_edit = (e) => {
-      handle_show_edit_modal(category._id);
+      handle_show_edit_modal(category);
       e.stopPropagation();
     };
 
     const handle_delete = (e) => {
-      handle_show_modal_confirm_delete(category._id);
+      handle_show_modal_confirm_delete(category);
       e.stopPropagation();
     };
 

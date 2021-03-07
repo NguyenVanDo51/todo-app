@@ -82,14 +82,12 @@ class ModalShowTodo extends Component {
     // Thay đổi input của tên tác vụ
     on_change_title_todo = (e) => {
         const { todo } = this.state;
-        const todo_t = { ...todo };
-        const { value } = e.target;
-        todo_t.title = value || '';
-        this.setState({ todo: todo_t });
-        if (e.keyCode === 13) {
-            if (todo_t.title) this.update_todo(todo, false);
-            else toast('Tiêu đề công việc không thể bỏ trống');
-        }
+        this.setState({
+            todo: {
+                ...todo,
+                title: e.target.value || '',
+            },
+        });
     };
 
     // Cập nhật thời hạn của todo
@@ -154,7 +152,7 @@ class ModalShowTodo extends Component {
             return;
         }
         const { handle_show_modal_option } = this.props;
-        const todo_params = todo_t || { ...todo };
+        const todo_params = todo_t;
         if (todo_params.time_out && typeof todo_params.time_out === 'string') {
             todo_params.time_out = new Date(todo_params.time_out.substr(0, 16)).getTime();
         }
@@ -180,7 +178,7 @@ class ModalShowTodo extends Component {
             },
         });
 
-        this.setState({ todo: {...todo, ...todo_params} });
+        this.setState({ todo: { ...todo, ...todo_params } });
         if (handle_modal) handle_show_modal_option();
         api_update_todo(todo._id, todo_params).then((res) => {
             if (!handle_modal) {
@@ -237,7 +235,8 @@ class ModalShowTodo extends Component {
         const { todo } = this.state;
         const todo_t = { ...todo };
         todo_t.files.splice(index, 1);
-        this.update_todo(todo_t, false);
+        // this.update_todo(todo_t, false);
+        this.update_todo({ files: todo_t.files });
     };
 
     // Xóa todo
@@ -276,8 +275,8 @@ class ModalShowTodo extends Component {
                 created_at: PaserDatetime_H_M_D_M_Y(),
             });
             note = '';
-            // this.setState({ todo: todo_t });
-            this.update_todo(todo_t, false);
+            // this.update_todo(todo_t, false);
+            this.update_todo({ note: todo_t.note }, false);
         } else {
             note = value;
         }
@@ -291,7 +290,7 @@ class ModalShowTodo extends Component {
         if (todo.note.length > 0) {
             todo_t.note.splice(index, 1);
             // this.setState({ todo: todo_t });
-            this.update_todo(todo_t, false);
+            this.update_todo({ note: todo_t.note }, false);
         }
     };
 
@@ -383,9 +382,7 @@ class ModalShowTodo extends Component {
 
     handle_change_is_important = () => {
         const { todo } = this.state;
-        const todo_t = { ...todo };
-        todo_t.is_important = todo_t.is_important ? 0 : 1;
-        this.update_todo(todo_t, false);
+        this.update_todo({ is_important: todo.is_important ? 0 : 1 }, false);
     };
 
     handle_show_img_viewer = (photo, is_show) => {
@@ -537,301 +534,304 @@ class ModalShowTodo extends Component {
         return (
             <>
                 {/* <Spin spin={loading}> */}
-                    {is_show_img_viewer ? (
-                        <ModalGateway>
-                            <Modal onClose={() => this.handle_show_img_viewer(null, false)}>
-                                <Carousel views={photo_attach_view} isFullscreen />
-                            </Modal>
-                        </ModalGateway>
-                    ) : null}
-                    <div className="work_modal">
-                        <span className="_work_modal_close" onClick={handle_show_modal_option}>
-                            <i className="blo close-icon" />
-                        </span>
-                        <div className="work_modal_header">
-                            <h2>
-                                <i className={todo.is_important ? 'fas fa-star active' : 'fal fa-star'} onClick={this.handle_change_is_important} />
-                                <EditableText
+                {is_show_img_viewer ? (
+                    <ModalGateway>
+                        <Modal onClose={() => this.handle_show_img_viewer(null, false)}>
+                            <Carousel views={photo_attach_view} isFullscreen />
+                        </Modal>
+                    </ModalGateway>
+                ) : null}
+                <div className="work_modal">
+                    <span className="_work_modal_close" onClick={handle_show_modal_option}>
+                        <i className="blo close-icon" />
+                    </span>
+                    <div className="work_modal_header">
+                        <h2>
+                            <i className={todo.is_important ? 'fas fa-star active' : 'fal fa-star'} onClick={this.handle_change_is_important} />
+                            <EditableText
+                                disabled={todo.is_complete}
+                                input_class="input-title"
+                                onChange={this.on_change_title_todo}
+                                handleEnter={() => {
+                                    if (!todo.title) {
+                                        toast.dismiss();
+                                        toast.error('Tên công việc không thể bỏ trống');
+                                        return;
+                                    }
+                                    this.update_todo({ title: todo.title }, false);
+                                }}
+                                value={todo.title}
+                            />
+                        </h2>
+                    </div>
+                    <div className="work_modal_content">
+                        {/* HET HAN TODO */}
+                        <div className="_work_modal_items _work_modal_xdate">
+                            <div className="_work_modal_items_labelx">
+                                <input
                                     disabled={todo.is_complete}
-                                    input_class="input-title"
-                                    onChange={this.on_change_title_todo}
-                                    handleEnter={() => {
-                                        if (!todo.title) {
-                                            toast.dismiss();
-                                            toast.error('Tên công việc không thể bỏ trống');
-                                            return;
-                                        }
-                                        this.update_todo(todo, false);
-                                    }}
-                                    value={todo.title}
+                                    type="checkbox"
+                                    checked={todo.time_out ? todo.time_out : input.is_check_time_out}
+                                    onChange={this.handle_change_timeout_checkbox}
+                                    id="timeout_id"
                                 />
-                            </h2>
-                        </div>
-                        <div className="work_modal_content">
-                            {/* HET HAN TODO */}
-                            <div className="_work_modal_items _work_modal_xdate">
-                                <div className="_work_modal_items_labelx">
+                                <label htmlFor="timeout_id">Ngày đến hạn</label>
+                                <div className="_work_modal_items_contentx">
                                     <input
                                         disabled={todo.is_complete}
-                                        type="checkbox"
-                                        checked={todo.time_out ? todo.time_out : input.is_check_time_out}
-                                        onChange={this.handle_change_timeout_checkbox}
-                                        id="timeout_id"
+                                        type="datetime-local"
+                                        value={todo.time_out ? PaserDatetimeLocalInput(new Date(todo.time_out)) : this.currentDate}
+                                        onChange={this.handle_change_timeout}
                                     />
-                                    <label htmlFor="timeout_id">Ngày đến hạn</label>
-                                    <div className="_work_modal_items_contentx">
-                                        <input
-                                            disabled={todo.is_complete}
-                                            type="datetime-local"
-                                            value={todo.time_out ? PaserDatetimeLocalInput(new Date(todo.time_out)) : this.currentDate}
-                                            onChange={this.handle_change_timeout}
-                                        />
-                                        {/* <div className="_work_items_contentx_toolbox">
+                                    {/* <div className="_work_items_contentx_toolbox">
                                             <button type="button" className="btn-save">Lưu</button>
                                             <button type="button" className="btn-exit">Hủy</button>
                                         </div> */}
-                                    </div>
-                                </div>
-                            </div>
-                            {/* BAT THONG BAO */}
-                            <div className="_work_modal_items _work_modal_xdate">
-                                {/* <label> */}
-                                <div className="_work_modal_items_labelx">
-                                    <input
-                                        id="remind_id"
-                                        disabled={todo.is_complete}
-                                        type="checkbox"
-                                        checked={todo.remind ? true : input.is_check_remind}
-                                        onChange={this.handle_change_remind_checkbox}
-                                    />
-                                    <label htmlFor="remind_id">Nhắc nhở tôi</label>
-                                    <div className="_work_modal_items_contentx">
-                                        <input
-                                            disabled={todo.is_complete}
-                                            type="datetime-local"
-                                            value={todo.remind ? PaserDatetimeLocalInput(new Date(todo.remind)) : this.currentDate}
-                                            onChange={this.handle_change_remind}
-                                        />
-                                    </div>
-                                </div>
-                                {/* </label> */}
-                            </div>
-                            {/* LAP LAI */}
-                            <div className="_work_modal_items _work_modal_xdate">
-                                <div className="_work_modal_items_labelx">
-                                    <input
-                                        disabled={todo.is_complete}
-                                        type="checkbox"
-                                        checked={todo.repeat.type}
-                                        onChange={this.handle_change_repeat_check_box}
-                                        id="repeat"
-                                    />
-                                    <label htmlFor="repeat">Lặp lại</label>
-                                    <div className="_work_modal_items_contentx">
-                                        <Tab.Container id="left-tabs-example" activeKey={todo.repeat.type ? todo.repeat.type : ''}>
-                                            <Nav justify variant="tabs">
-                                                <Nav.Item onClick={() => this.handle_change_repeat('daily')}>
-                                                    <Nav.Link eventKey="daily">Hàng ngày</Nav.Link>
-                                                </Nav.Item>
-                                                <Nav.Item onClick={() => this.handle_change_repeat('weekly')}>
-                                                    <Nav.Link eventKey="weekly">Hàng tuần</Nav.Link>
-                                                </Nav.Item>
-                                                <Nav.Item onClick={() => this.handle_change_repeat('monthly')}>
-                                                    <Nav.Link eventKey="monthly">Hàng tháng</Nav.Link>
-                                                </Nav.Item>
-                                                <Nav.Item onClick={() => this.handle_change_repeat('annual')}>
-                                                    <Nav.Link eventKey="annual">Hàng năm</Nav.Link>
-                                                </Nav.Item>
-                                                <Nav.Item onClick={() => this.handle_change_repeat('option')}>
-                                                    <Nav.Link eventKey="option">Tùy chỉnh</Nav.Link>
-                                                </Nav.Item>
-                                            </Nav>
-                                            <Tab.Content>
-                                                <Tab.Pane eventKey="option">
-                                                    <div className="_work_modal_loop">
-                                                        <div className="row align-items-center work_option_time">
-                                                            <div className="col-4">
-                                                                <div className="_work_modal_loop_title">Lặp lại mỗi...</div>
-                                                            </div>
-                                                            <div className="col-4">
-                                                                <input
-                                                                    disabled={todo.is_complete}
-                                                                    value={isEmpty(todo.repeat.option_time.times) ? 1 : todo.repeat.option_time.times}
-                                                                    onChange={(e) => this.handle_change_repeat_option(e, null)}
-                                                                    type="number"
-                                                                    min="1"
-                                                                    max="1000"
-                                                                />
-                                                            </div>
-                                                            <div className="col-4">
-                                                                <select
-                                                                    value={todo.repeat.option_time.unit}
-                                                                    onChange={(e) => this.handle_change_repeat_option(null, e)}
-                                                                >
-                                                                    <option value="week">Tuần</option>
-                                                                    <option value="month">Tháng</option>
-                                                                    <option value="year">Năm</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </Tab.Pane>
-                                            </Tab.Content>
-                                        </Tab.Container>
-                                        {todo.repeat.type === 'weekly' || todo.repeat.option_time.unit === 'week' ? (
-                                            <div className="_work_modal_loop_last">
-                                                <h2>Thứ...</h2>
-                                                <div className="_work_modal_loop_last_ct">
-                                                    <Nav justify variant="tabs">
-                                                        <Nav.Item>
-                                                            <Nav.Link
-                                                                className={todo.repeat.option.indexOf(1) !== -1 ? 'active' : ''}
-                                                                onClick={() => this.handle_change_repeat_days(1)}
-                                                            >
-                                                                T2
-                                                            </Nav.Link>
-                                                        </Nav.Item>
-                                                        <Nav.Item>
-                                                            <Nav.Link
-                                                                className={todo.repeat.option.indexOf(2) !== -1 ? 'active' : ''}
-                                                                onClick={() => this.handle_change_repeat_days(2)}
-                                                            >
-                                                                T3
-                                                            </Nav.Link>
-                                                        </Nav.Item>
-                                                        <Nav.Item>
-                                                            <Nav.Link
-                                                                className={todo.repeat.option.indexOf(3) !== -1 ? 'active' : ''}
-                                                                onClick={() => this.handle_change_repeat_days(3)}
-                                                            >
-                                                                T4
-                                                            </Nav.Link>
-                                                        </Nav.Item>
-                                                        <Nav.Item>
-                                                            <Nav.Link
-                                                                className={todo.repeat.option.indexOf(4) !== -1 ? 'active' : ''}
-                                                                onClick={() => this.handle_change_repeat_days(4)}
-                                                            >
-                                                                T5
-                                                            </Nav.Link>
-                                                        </Nav.Item>
-                                                        <Nav.Item>
-                                                            <Nav.Link
-                                                                className={todo.repeat.option.indexOf(5) !== -1 ? 'active' : ''}
-                                                                onClick={() => this.handle_change_repeat_days(5)}
-                                                            >
-                                                                T6
-                                                            </Nav.Link>
-                                                        </Nav.Item>
-                                                        <Nav.Item>
-                                                            <Nav.Link
-                                                                className={todo.repeat.option.indexOf(6) !== -1 ? 'active' : ''}
-                                                                onClick={() => this.handle_change_repeat_days(6)}
-                                                            >
-                                                                T7
-                                                            </Nav.Link>
-                                                        </Nav.Item>
-                                                        <Nav.Item>
-                                                            <Nav.Link
-                                                                className={todo.repeat.option.indexOf(0) !== -1 ? 'active' : ''}
-                                                                onClick={() => this.handle_change_repeat_days(0)}
-                                                            >
-                                                                CN
-                                                            </Nav.Link>
-                                                        </Nav.Item>
-                                                    </Nav>
-                                                </div>
-                                            </div>
-                                        ) : null}
-                                    </div>
-                                    {/* ) : null} */}
-                                </div>
-                            </div>
-                            {/* THEM FILE */}
-                            <div className="_work_modal_items">
-                                <label>
-                                    <div className="_work_modal_items_content">
-                                        <div className="_work_modal_items_title">Thêm tệp</div>
-                                        <span>Chọn file</span>
-                                        <input
-                                            disabled={todo.is_complete || !isEmpty(files_pending)}
-                                            type="file"
-                                            onChange={this.on_change_file}
-                                            multiple
-                                            max="4"
-                                            maxLength="4"
-                                            accept=".jpg,.png,.jpeg,.gif,.tiff,.json,.bmp,.doc,.txt,.png,.avi,.docx,.html,.htm,.mp3,.pdf,.ppsx,.ppsm,.pps,.ppam,.potx,.psd"
-                                        />
-                                    </div>
-                                </label>
-                                {/* <Spin> */}
-                                <div className="_work_modal_items_contentx _work_modal_const active">
-                                    {!isEmpty(files_pending) ? (
-                                        <>
-                                            <div className="_work_modal_file">
-                                                <div className="_work_modal_file_img" />
-                                                <div className="_work_modal_file_content">
-                                                    <div className="_work_modal_file_title">
-                                                        <h2>{files_pending.name}</h2>
-                                                        <p>{`Đang tải lên... (còn lại ${files_pending.total - 1 - files_pending.index} tệp)`}</p>
-                                                    </div>
-                                                    <span className="_work_modal_file_close">{/* <i className="blo close-icon" /> */}</span>
-                                                </div>
-                                            </div>
-                                        </>
-                                    ) : null}
-                                    {this.files_preview()}
-                                </div>
-                                {/* </Spin> */}
-                            </div>
-                            {/* THEM NOTE */}
-                            <div className="_work_modal_items" style={{ paddingTop: '20px' }}>
-                                <h2>Ghi chú</h2>
-                                <textarea
-                                    placeholder=""
-                                    disabled={todo.is_complete}
-                                    value={note_t}
-                                    onChange={this.handle_change_note}
-                                    onKeyDown={this.handle_change_note}
-                                />
-                                <div className="_work_modal_items_contentx _work_modal_const active">{this.note_render()}</div>
-                            </div>
-                            <div className="_work_modal_footer">
-                                {/* <span className="delete_button" onClick={this.handle_show_modal_confirm}>
-                                <i className="icon-trash" /> Xóa công việc
-                            </span> */}
-                                <div className="btn_save_close">
-                                    <button type="button" className="delete_button" onClick={this.handle_show_modal_confirm}>
-                                        Xóa công việc
-                                    </button>
-                                </div>
-                                <div className="btn_save_close">
-                                    <button type="button" className="close_button" onClick={handle_show_modal_option}>
-                                        Đóng
-                                    </button>
-                                    <button type="button" className="save_button" onClick={() => this.update_todo()}>
-                                        Cập nhật
-                                    </button>
                                 </div>
                             </div>
                         </div>
+                        {/* BAT THONG BAO */}
+                        <div className="_work_modal_items _work_modal_xdate">
+                            {/* <label> */}
+                            <div className="_work_modal_items_labelx">
+                                <input
+                                    id="remind_id"
+                                    disabled={todo.is_complete}
+                                    type="checkbox"
+                                    checked={todo.remind ? true : input.is_check_remind}
+                                    onChange={this.handle_change_remind_checkbox}
+                                />
+                                <label htmlFor="remind_id">Nhắc nhở tôi</label>
+                                <div className="_work_modal_items_contentx">
+                                    <input
+                                        disabled={todo.is_complete}
+                                        type="datetime-local"
+                                        value={todo.remind ? PaserDatetimeLocalInput(new Date(todo.remind)) : this.currentDate}
+                                        onChange={this.handle_change_remind}
+                                    />
+                                </div>
+                            </div>
+                            {/* </label> */}
+                        </div>
+                        {/* LAP LAI */}
+                        <div className="_work_modal_items _work_modal_xdate">
+                            <div className="_work_modal_items_labelx">
+                                <input
+                                    disabled={todo.is_complete}
+                                    type="checkbox"
+                                    checked={todo.repeat.type}
+                                    onChange={this.handle_change_repeat_check_box}
+                                    id="repeat"
+                                />
+                                <label htmlFor="repeat">Lặp lại</label>
+                                <div className="_work_modal_items_contentx">
+                                    <Tab.Container id="left-tabs-example" activeKey={todo.repeat.type ? todo.repeat.type : ''}>
+                                        <Nav justify variant="tabs">
+                                            <Nav.Item onClick={() => this.handle_change_repeat('daily')}>
+                                                <Nav.Link eventKey="daily">Hàng ngày</Nav.Link>
+                                            </Nav.Item>
+                                            <Nav.Item onClick={() => this.handle_change_repeat('weekly')}>
+                                                <Nav.Link eventKey="weekly">Hàng tuần</Nav.Link>
+                                            </Nav.Item>
+                                            <Nav.Item onClick={() => this.handle_change_repeat('monthly')}>
+                                                <Nav.Link eventKey="monthly">Hàng tháng</Nav.Link>
+                                            </Nav.Item>
+                                            <Nav.Item onClick={() => this.handle_change_repeat('annual')}>
+                                                <Nav.Link eventKey="annual">Hàng năm</Nav.Link>
+                                            </Nav.Item>
+                                            <Nav.Item onClick={() => this.handle_change_repeat('option')}>
+                                                <Nav.Link eventKey="option">Tùy chỉnh</Nav.Link>
+                                            </Nav.Item>
+                                        </Nav>
+                                        <Tab.Content>
+                                            <Tab.Pane eventKey="option">
+                                                <div className="_work_modal_loop">
+                                                    <div className="row align-items-center work_option_time">
+                                                        <div className="col-4">
+                                                            <div className="_work_modal_loop_title">Lặp lại mỗi...</div>
+                                                        </div>
+                                                        <div className="col-4">
+                                                            <input
+                                                                disabled={todo.is_complete}
+                                                                value={isEmpty(todo.repeat.option_time.times) ? 1 : todo.repeat.option_time.times}
+                                                                onChange={(e) => this.handle_change_repeat_option(e, null)}
+                                                                type="number"
+                                                                min="1"
+                                                                max="1000"
+                                                            />
+                                                        </div>
+                                                        <div className="col-4">
+                                                            <select value={todo.repeat.option_time.unit} onChange={(e) => this.handle_change_repeat_option(null, e)}>
+                                                                <option value="week">Tuần</option>
+                                                                <option value="month">Tháng</option>
+                                                                <option value="year">Năm</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Tab.Pane>
+                                        </Tab.Content>
+                                    </Tab.Container>
+                                    {todo.repeat.type === 'weekly' || todo.repeat.option_time.unit === 'week' ? (
+                                        <div className="_work_modal_loop_last">
+                                            <h2>Thứ...</h2>
+                                            <div className="_work_modal_loop_last_ct">
+                                                <Nav justify variant="tabs">
+                                                    <Nav.Item>
+                                                        <Nav.Link
+                                                            className={todo.repeat.option.indexOf(1) !== -1 ? 'active' : ''}
+                                                            onClick={() => this.handle_change_repeat_days(1)}
+                                                        >
+                                                            T2
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                    <Nav.Item>
+                                                        <Nav.Link
+                                                            className={todo.repeat.option.indexOf(2) !== -1 ? 'active' : ''}
+                                                            onClick={() => this.handle_change_repeat_days(2)}
+                                                        >
+                                                            T3
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                    <Nav.Item>
+                                                        <Nav.Link
+                                                            className={todo.repeat.option.indexOf(3) !== -1 ? 'active' : ''}
+                                                            onClick={() => this.handle_change_repeat_days(3)}
+                                                        >
+                                                            T4
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                    <Nav.Item>
+                                                        <Nav.Link
+                                                            className={todo.repeat.option.indexOf(4) !== -1 ? 'active' : ''}
+                                                            onClick={() => this.handle_change_repeat_days(4)}
+                                                        >
+                                                            T5
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                    <Nav.Item>
+                                                        <Nav.Link
+                                                            className={todo.repeat.option.indexOf(5) !== -1 ? 'active' : ''}
+                                                            onClick={() => this.handle_change_repeat_days(5)}
+                                                        >
+                                                            T6
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                    <Nav.Item>
+                                                        <Nav.Link
+                                                            className={todo.repeat.option.indexOf(6) !== -1 ? 'active' : ''}
+                                                            onClick={() => this.handle_change_repeat_days(6)}
+                                                        >
+                                                            T7
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                    <Nav.Item>
+                                                        <Nav.Link
+                                                            className={todo.repeat.option.indexOf(0) !== -1 ? 'active' : ''}
+                                                            onClick={() => this.handle_change_repeat_days(0)}
+                                                        >
+                                                            CN
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                </Nav>
+                                            </div>
+                                        </div>
+                                    ) : null}
+                                </div>
+                                {/* ) : null} */}
+                            </div>
+                        </div>
+                        {/* THEM FILE */}
+                        <div className="_work_modal_items">
+                            <label>
+                                <div
+                                    className="_work_modal_items_content"
+                                    onClick={() => {
+                                        toast.dismiss();
+                                        toast.error('Tính năng đang bảo trì.');
+                                    }}
+                                >
+                                    <div className="_work_modal_items_title">Thêm tệp</div>
+                                    <span>Chọn file</span>
+                                    {/* <input
+                                        disabled={todo.is_complete || !isEmpty(files_pending)}
+                                        type="file"
+                                        onChange={() => { toast.dismiss(); toast.success('Chức năng đang được hoàn thiện.'); }}
+                                        multiple
+                                        max="4"
+                                        maxLength="4"
+                                        accept=".jpg,.png,.jpeg,.gif,.tiff,.json,.bmp,.doc,.txt,.png,.avi,.docx,.html,.htm,.mp3,.pdf,.ppsx,.ppsm,.pps,.ppam,.potx,.psd"
+                                    /> */}
+                                </div>
+                            </label>
+                            {/* <Spin> */}
+                            <div className="_work_modal_items_contentx _work_modal_const active">
+                                {!isEmpty(files_pending) ? (
+                                    <>
+                                        <div className="_work_modal_file">
+                                            <div className="_work_modal_file_img" />
+                                            <div className="_work_modal_file_content">
+                                                <div className="_work_modal_file_title">
+                                                    <h2>{files_pending.name}</h2>
+                                                    <p>{`Đang tải lên... (còn lại ${files_pending.total - 1 - files_pending.index} tệp)`}</p>
+                                                </div>
+                                                <span className="_work_modal_file_close">{/* <i className="blo close-icon" /> */}</span>
+                                            </div>
+                                        </div>
+                                    </>
+                                ) : null}
+                                {this.files_preview()}
+                            </div>
+                            {/* </Spin> */}
+                        </div>
+                        {/* THEM NOTE */}
+                        <div className="_work_modal_items" style={{ paddingTop: '20px' }}>
+                            <h2>Ghi chú</h2>
+                            <textarea
+                                placeholder=""
+                                disabled={todo.is_complete}
+                                value={note_t}
+                                onChange={this.handle_change_note}
+                                onKeyDown={this.handle_change_note}
+                            />
+                            <div className="_work_modal_items_contentx _work_modal_const active">{this.note_render()}</div>
+                        </div>
+                        <div className="_work_modal_footer">
+                            {/* <span className="delete_button" onClick={this.handle_show_modal_confirm}>
+                                <i className="icon-trash" /> Xóa công việc
+                            </span> */}
+                            <div className="btn_save_close">
+                                <button type="button" className="delete_button" onClick={this.handle_show_modal_confirm}>
+                                    Xóa công việc
+                                </button>
+                            </div>
+                            <div className="btn_save_close">
+                                <button type="button" className="close_button" onClick={handle_show_modal_option}>
+                                    Đóng
+                                </button>
+                                <button type="button" className="save_button" onClick={() => this.update_todo()}>
+                                    Cập nhật
+                                </button>
+                            </div>
+                        </div>
                     </div>
+                </div>
 
-                    {/* MODAL XÁC NHẬN XÓA TODO */}
-                    {/* <Confirm show={is_show_modal_confirm} mess="Bạn có chắc chắn muốn xóa ?" onClose={this.handle_show_modal_confirm} onOk={this.handle_delete_todo} /> */}
+                {/* MODAL XÁC NHẬN XÓA TODO */}
+                {/* <Confirm show={is_show_modal_confirm} mess="Bạn có chắc chắn muốn xóa ?" onClose={this.handle_show_modal_confirm} onOk={this.handle_delete_todo} /> */}
 
-                    <ModalBootStrap size="sm" show={is_show_modal_confirm} onHide={this.handle_show_modal_confirm} backdrop="static">
-                        <ModalBootStrap.Body>Bạn có chắc chắn muốn xóa</ModalBootStrap.Body>
-                        <ModalBootStrap.Footer style={{ padding: '0.4rem' }}>
-                            <Button variant="secondary margin-right-8" size="sm" onClick={this.handle_show_modal_confirm}>
-                                Hủy
-                            </Button>
-                            <Button variant="primary" size="sm" onClick={() => this.handle_delete_todo(todo._id)}>
-                                Xác nhận
-                            </Button>
-                        </ModalBootStrap.Footer>
-                    </ModalBootStrap>
-                    {/* </Spin> */}
+                <ModalBootStrap size="sm" show={is_show_modal_confirm} onHide={this.handle_show_modal_confirm} backdrop="static">
+                    <ModalBootStrap.Body>Bạn có chắc chắn muốn xóa</ModalBootStrap.Body>
+                    <ModalBootStrap.Footer style={{ padding: '0.4rem' }}>
+                        <Button variant="secondary margin-right-8" size="sm" onClick={this.handle_show_modal_confirm}>
+                            Hủy
+                        </Button>
+                        <Button variant="primary" size="sm" onClick={() => this.handle_delete_todo(todo._id)}>
+                            Xác nhận
+                        </Button>
+                    </ModalBootStrap.Footer>
+                </ModalBootStrap>
+                {/* </Spin> */}
             </>
         );
     }

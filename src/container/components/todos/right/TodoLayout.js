@@ -21,10 +21,6 @@ class TodoLayout extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            input: {
-                title: '', // Lưu input khi thêm mới
-                time_out: '',
-            },
             todo: {
                 remind: {
                     date: '',
@@ -34,7 +30,6 @@ class TodoLayout extends Component {
             is_show_sort: false,
             is_show_modal_create_todo: false,
         };
-        this.todo_name_ref = React.createRef();
         this.ref_sort = React.createRef();
     }
 
@@ -121,35 +116,35 @@ class TodoLayout extends Component {
         const sort_t = { ...sort };
         sort_t.sort_by = s || '';
         sort_t.reverse = r || '';
-        if (s === null && r === null) {
-            this.getTodo();
-        } else {
+        // if (s === null && r === null) {
+            // this.getTodo();
+        // } else {
             this.getTodo(sort_t);
-        }
+        // }
         this.set_show_sort(false);
         dispatch({ type: CHANGE_SORT_BY, payload: { sort: sort_t } });
     };
 
     componentDidMount() {
-        const { dispatch, category } = this.props;
-        let title = '';
-        switch (category) {
-            case 'task':
-                title = 'Tất cả công việc';
-                break;
-            case 'completed':
-                title = 'Công việc đã hoàn thành';
-                break;
-            default:
-                api_get_one_category_todo(category).then((data) => {
-                    if (data) {
-                        dispatch({ type: CHANGE_LIST_TODO_NAME, payload: { todo_category_name: data.name } });
-                    }
-                });
-                break;
-        }
-        dispatch({ type: CHANGE_LIST_TODO_NAME, payload: { todo_category_name: title } });
-        // this.getTodo();
+        // const { dispatch, category } = this.props;
+        // let title = '';
+        // switch (category) {
+        //     case 'task':
+        //         title = 'Tất cả công việc';
+        //         break;
+        //     case 'completed':
+        //         title = 'Công việc đã hoàn thành';
+        //         break;
+        //     default:
+        //         // api_get_one_category_todo(category).then((data) => {
+        //         //     if (data) {
+        //         //         dispatch({ type: CHANGE_LIST_TODO_NAME, payload: { todo_category_name: data.name } });
+        //         //     }
+        //         // });
+        //         break;
+        // }
+        // dispatch({ type: CHANGE_LIST_TODO_NAME, payload: { todo_category_name: title } });
+        // // this.getTodo();
         document.addEventListener('mousedown', this.handleClickOutside);
     }
 
@@ -190,61 +185,6 @@ class TodoLayout extends Component {
         const { value } = e.target;
         todo_t[type] = value;
         this.setState({ todo: todo_t });
-    };
-
-    // Gọi API tạo mới todo
-    handle_create_todo = () => {
-        const { input } = this.state;
-        let input_t = { ...input };
-        const { category, dispatch, todos } = this.props;
-        // if (loading) return;
-        this.setShowModalCreateTodo(false);
-        switch (category) {
-            case 'task':
-                break;
-            case 'completed':
-                input_t.is_complete = 1;
-                break;
-            case 'important':
-                input_t.is_important = 1;
-                break;
-            default:
-                input_t.category_id = category;
-                break;
-        }
-        if (input_t.title) {
-            if (input_t.time_out && typeof input_t.time_out === 'string') input_t.time_out = new Date(input_t.time_out).getTime();
-            input_t.created_at = new Date().getTime();
-            this.setState({ input: { title: '', time_out: '' } });
-            dispatch({ type: CHANGE_SORT_BY, payload: { sort: { sort_by: '', reverse: '' } } });
-            api_create_todo(input_t).then((res) => {
-                if (res) {
-                    dispatch({
-                        type: CHANGE_LIST_TODO,
-                        payload: {
-                            todos: [...todos, { ...res.data }],
-                        },
-                    });
-                }
-            });
-        } else {
-            this.todo_name_ref.current.focus();
-        }
-    };
-
-    // Xử lý onChange của ô input thêm mới 1 todo
-    handle_change_input = (e, type = '') => {
-        if (e.keyCode === 13 && type === 'title') {
-            this.handle_create_todo();
-        } else {
-            const value = e.target.value || '';
-            if (value.length < 255) {
-                const { input } = this.state;
-                const input_t = { ...input };
-                input_t[type] = value;
-                this.setState({ input: input_t });
-            }
-        }
     };
 
     render_sort_option = () => {
@@ -296,7 +236,7 @@ class TodoLayout extends Component {
     };
 
     render() {
-        const { input, is_show_sort, is_show_modal_create_todo } = this.state;
+        const { is_show_sort, is_show_modal_create_todo } = this.state;
         const { todo_category_name, search_todo, category, todos, loading_todo, sort } = this.props;
         return (
             <>
@@ -306,7 +246,7 @@ class TodoLayout extends Component {
                             <div className="work_all_content">
                                 <div className="container">
                                     <div className="work_all_content_title">
-                                        <h2>{todo_category_name || 'Tất cả công việc'}</h2>
+                                        <h2>{todo_category_name || 'Danh sách công việc'}</h2>
                                     </div>
                                     <div className="work_toolbar">
                                         {/* PHAN TIM KIEM */}
@@ -395,11 +335,9 @@ class TodoLayout extends Component {
                             <Suspense fallback={null}>
                                 <ModalCreateTodo
                                     is_show_modal={is_show_modal_create_todo}
-                                    handle_show_modal_create_todo={() => this.setShowModalCreateTodo(false)}
-                                    todo_name_ref={this.todo_name_ref}
-                                    input={input}
-                                    handle_change_input={this.handle_change_input}
-                                    handle_create_todo={this.handle_create_todo}
+                                    handle_show_modal_create_todo={this.setShowModalCreateTodo}
+                                    todos={todos}
+                                    category_id={category}
                                 />
                             </Suspense>
                         </div>

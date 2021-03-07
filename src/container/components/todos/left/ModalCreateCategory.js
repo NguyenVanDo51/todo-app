@@ -32,7 +32,8 @@ const ModalCreateCategory = ({
             todo_name_ref.current.focus();
         }
         return set_display_color_picker(false);
-    }, [is_show_modal_category, todo_name_ref]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [is_show_modal_category]);
 
     // Tạo mới 1 category todo
     const handle_create_todo_category = () => {
@@ -54,7 +55,6 @@ const ModalCreateCategory = ({
                 ]);
                 dispatch({ type: CHANGE_LIST_CATEGORY, payload: [...categories_todo, {...category, amount_todo: 0}] });
                 set_loading(false);
-                toast.success('Tạo danh sách thành công.');
                 set_todo_name('');
                 handle_show_modal_category();
             });
@@ -82,7 +82,7 @@ const ModalCreateCategory = ({
 
     return (
         <>
-            <Modal show={is_show_modal_category} onHide={handle_show_modal_category} centered className="work_modals">
+            <Modal show={is_show_modal_category} centered className="work_modals">
                 <Spin spin={loading}>
                     <div className="work_modal">
                         <div className="work_modal_content">
@@ -127,8 +127,6 @@ const ModalCreateCategory = ({
                                         </div>
                                     ) : null}
                                 </div>
-                                {/* </div> */}
-                                {/* <div> */}
                             </div>
                             <div className="work_modal_btn">
                                 <button type="button" className="work_modal_btn_reset" onClick={handle_show_modal_category}>

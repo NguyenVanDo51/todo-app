@@ -4,6 +4,8 @@ import { waterfall } from 'async';
 import AuthService from '../../../core/auth/AuthService';
 import toast from 'react-hot-toast';
 import { connect } from 'react-redux';
+import { Spinner } from 'react-bootstrap';
+import { LOADING_FULLSCREEN } from '../../../reducers/actions'
 
 const auth = new AuthService();
 
@@ -12,14 +14,19 @@ class FormLogin extends Component {
         super(props);
         this.state = {
             inputs: {
-                email: '',
-                password: '',
+                email: 'donv@gmail.com',
+                password: '12345678',
                 repeat_password: '',
                 remember: false,
             },
             option: 1,
+            loading: false,
         };
     }
+
+    setLoading = (value) => {
+        this.setState({ loading: value });
+    };
 
     onChangeInput(type, e) {
         const { value } = e.target;
@@ -43,7 +50,8 @@ class FormLogin extends Component {
     onSubmit = (e) => {
         const { inputs, option } = this.state;
         const { email, password, repeat_password } = inputs;
-        const { history } = this.props;
+        const { history, dispatch } = this.props;
+        this.setLoading(true);
         if (option === 1) {
             waterfall(
                 [
@@ -53,7 +61,7 @@ class FormLogin extends Component {
                                 callback(null, data);
                             } else {
                                 toast.error('Tên tài khoản hoặc mật khẩu không chính xác!');
-                                this.setState({ inputs: { ...inputs, password: '' } });
+                                this.setState({ inputs: { ...inputs, password: '' }, loading: false });
                             }
                         });
                     },
@@ -64,6 +72,7 @@ class FormLogin extends Component {
                     },
                 ],
                 () => {
+                    this.setLoading(false);
                     history.push('/app');
                 }
             );
@@ -94,7 +103,7 @@ class FormLogin extends Component {
     };
 
     render() {
-        const { inputs, option } = this.state;
+        const { inputs, option, loading } = this.state;
 
         return (
             <div className="root_login">
@@ -156,8 +165,8 @@ class FormLogin extends Component {
                                     onChange={(e) => this.onChangeInput('repeat_password', e)}
                                 />
                             </div>
-                            <button className="btn-submit-form" type="submit">
-                                {option === 1 ? 'Đăng nhập' : option === 2 ? 'Đăng ký' : 'Quên mật khẩu'}
+                            <button disabled={loading} className="btn-submit-form" type="submit">
+                                {loading ? <Spinner animation="border" variant="light" /> : option === 1 ? 'Đăng nhập' : option === 2 ? 'Đăng ký' : 'Quên mật khẩu'}
                             </button>
                         </form>
                     </div>

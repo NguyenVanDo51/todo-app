@@ -7,7 +7,7 @@ import { Spin } from '../../common/library';
 import { api_edit_category_todo, api_get_one_category_todo } from '../../../api';
 import { CHANGE_LIST_CATEGORY } from '../../../reducers/actions';
 
-const ModalCreateCategory = ({ is_show_modal_category, category_choose_id, handle_show_modal_category, categories_todo }) => {
+const ModalCreateCategory = ({ is_show_modal_category, category_choose, handle_show_modal_category, categories_todo }) => {
     const [todo_name, set_todo_name] = useState('');
     const [todo_color, set_todo_color] = useState('');
     const [loading, set_loading] = useState(false);
@@ -20,16 +20,17 @@ const ModalCreateCategory = ({ is_show_modal_category, category_choose_id, handl
         if (todo_name_ref.current) {
             todo_name_ref.current.focus();
         }
-        if (category_choose_id) {
-            api_get_one_category_todo(category_choose_id).then((data) => {
-                if (data) {
-                    set_todo_name(data.name);
-                    set_todo_color(data.color);
-                    set_color_default(data.color);
-                }
-                set_loading(false);
-            });
+        if (category_choose) {
+            // api_get_one_category_todo(category_choose).then((data) => {
+                // if (data) {
+                    set_todo_name(category_choose.name);
+                    set_todo_color(category_choose.color);
+                    set_color_default(category_choose.color);
+                // }
+                // set_loading(false);
+            // });
         }
+
         return function cleanup() {
             set_todo_color('');
             set_todo_name('');
@@ -51,15 +52,15 @@ const ModalCreateCategory = ({ is_show_modal_category, category_choose_id, handl
             dispatch({
                 type: CHANGE_LIST_CATEGORY,
                 payload: categories_todo.map((category) => {
-                    if (category._id === category_choose_id)
+                    if (category._id === category_choose._id)
                         return {
                             ...category,
-                            params,
+                            ...params,
                         };
                     return category;
                 }),
             });
-            api_edit_category_todo(category_choose_id, params).then((res) => {
+            api_edit_category_todo(category_choose._id, params).then((res) => {
                 if (!res) {
                     toast.error('Đã xảy ra lỗi. Vui lòng thử lại');
                 }

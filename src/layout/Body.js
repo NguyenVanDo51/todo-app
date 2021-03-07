@@ -5,6 +5,7 @@ import AuthService from '../container/core/auth/AuthService';
 import { R_PROFILE } from '../container/reducers/actions';
 import NavTop from '../container/components/layout/NavTop';
 import TodoCatogory from '../page/todos/TodoCategory';
+import LoadingFullscreen from '../page/loading';
 
 const auth = new AuthService();
 
@@ -12,6 +13,7 @@ const Body = (props) => {
     const history = useHistory();
     const dispatch = useDispatch();
     const [is_login, setIsLogin] = useState(false);
+    const { loading_fullscreen } = props;
 
     useEffect(() => {
         auth.getInfo().then((res) => {
@@ -22,11 +24,17 @@ const Body = (props) => {
                 history.push('/login');
             }
         });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // useEffect(() => {
+
+    // })
+    // if (loading_fullscreen) return
 
     return (
         <>
+            {loading_fullscreen && <LoadingFullscreen loading_fullscreen={loading_fullscreen} />}
             <div className="app">
                 <div className="_app_box">
                     <div className="main">
@@ -47,6 +55,8 @@ const Body = (props) => {
 
 const mapStateToProps = ({ persist, state }) => ({
     profile: persist.profile,
+    loading_fullscreen: state.loading_fullscreen,
+    categories_todo: state.categories_todo,
 });
 
 export default connect(mapStateToProps)(Body);
