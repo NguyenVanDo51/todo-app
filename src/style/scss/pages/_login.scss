@@ -91,7 +91,7 @@
         transition: all 0.4s cubic-bezier(0.785, 0.135, 0.15, 0.86);
 
         &.sign-in {
-            max-height: 130px;
+            max-height: 128px;
         }
 
         &.sign-up {
@@ -130,6 +130,7 @@
     }
 
     .btn-submit-form {
+        margin-top: 5px;
         border: 0;
         appearance: none;
         -webkit-appearance: none;
