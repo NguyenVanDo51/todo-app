@@ -143,7 +143,7 @@ class TodoLayout extends Component {
         //         break;
         // }
         // dispatch({ type: CHANGE_LIST_TODO_NAME, payload: { todo_category_name: title } });
-        // // this.getTodo();
+        this.getTodo();
         document.addEventListener('mousedown', this.handleClickOutside);
     }
 
@@ -236,11 +236,11 @@ class TodoLayout extends Component {
 
     render() {
         const { is_show_sort, is_show_modal_create_todo } = this.state;
-        const { todo_category_name, search_todo, category, todos, loading_todo, sort } = this.props;
+        const { todo_category_name, search_todo, category, todos, loading_todo, sort, loading_fullscreen } = this.props;
         return (
             <>
                 <div className="work_content">
-                    <Spin spin={loading_todo}>
+                    <Spin spin={!loading_fullscreen && loading_todo}>
                         <div className="container">
                             <div className="work_all_content">
                                 <div className="container">
@@ -354,6 +354,7 @@ const mapStateToProps = ({ persist, state }) => ({
     loading_todo: state.loading_todo,
     sort: state.sort,
     search_todo: state.search_todo,
+    loading_fullscreen: state.loading_fullscreen,
 });
 
 export default withRouter(connect(mapStateToProps)(TodoLayout));

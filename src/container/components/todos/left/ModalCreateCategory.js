@@ -59,6 +59,7 @@ const ModalCreateCategory = ({
                 handle_show_modal_category();
             });
         } else {
+            toast.dismiss();
             toast.error('Tên danh sách không được để trống!');
             todo_name_ref.current.focus();
         }

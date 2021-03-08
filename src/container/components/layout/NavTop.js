@@ -50,7 +50,7 @@ const NavTop = (props) => {
                         ></path>
                     </svg>
                 </button>
-                <button type="button" aria-label="Go to start page" onClick={() => history.push('/app')} className="top_bar_btn" data-reach-tooltip-trigger="">
+                <button type="button" aria-label="Go to start page" onClick={() => history.push('/app/task')} className="top_bar_btn" data-reach-tooltip-trigger="">
                     <svg width="24" height="24" viewBox="0 0 24 24">
                         <path
                             fill="currentColor"
@@ -60,7 +60,7 @@ const NavTop = (props) => {
                 </button>
             </div>
             <div className="right">
-                <button
+                {/* <button
                     type="button"
                     id="quick_add_task_holder"
                     data-track="navigation|quick_add"
@@ -78,7 +78,7 @@ const NavTop = (props) => {
                             </g>
                         </g>
                     </svg>
-                </button>
+                </button> */}
                 <button
                     type="button"
                     aria-owns="notification_popup"
@@ -133,9 +133,6 @@ const NavTop = (props) => {
                     </div>
                     <div className="body_notify">
                         <p className="text-muted">Bạn chưa có thông báo nào</p>
-                    </div>
-                    <div className="footet_notify">
-                        <span>Xem tất cả</span>
                     </div>
                 </div>
             </div>

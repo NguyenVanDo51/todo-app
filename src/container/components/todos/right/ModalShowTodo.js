@@ -396,6 +396,12 @@ class ModalShowTodo extends Component {
         Download(url, filename);
     };
 
+    handleUpdateTodo = () => {
+        const { time_out, remind, repeat } = this.state;
+
+        this.update_todo({ time_out, remind, repeat });
+    }
+
     // render ds file đính kèm
     files_preview = () => {
         const arrFileExt = [
@@ -809,7 +815,7 @@ class ModalShowTodo extends Component {
                                 <button type="button" className="close_button" onClick={handle_show_modal_option}>
                                     Đóng
                                 </button>
-                                <button type="button" className="save_button" onClick={() => this.update_todo()}>
+                                <button type="button" className="save_button" onClick={() => this.handleUpdateTodo()}>
                                     Cập nhật
                                 </button>
                             </div>

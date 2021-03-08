@@ -44,7 +44,6 @@ const routerReducers = (state = initialState, { type, payload } = {}) => {
             break;
 
         case Types.CHANGE_LIST_CATEGORY:
-            console.log('categories_todo', payload);
             states = { ...state, categories_todo: payload };
             break;
 

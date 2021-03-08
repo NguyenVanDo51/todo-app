@@ -159,7 +159,7 @@ class ListTodo extends Component {
     categories_render = () => {
         const { menuActiveTodo, categories_todo } = this.props;
         if (categories_todo.length > 0) {
-            console.log('render categories_todo', categories_todo);
+            console.log('render categories_todo', categories_todo[0]);
             return categories_todo.map((category, index) => {
                 if (index > 0)
                     return (
