@@ -645,7 +645,10 @@ class ModalShowTodo extends Component {
                                             <Nav.Item onClick={() => this.handle_change_repeat('annual')}>
                                                 <Nav.Link eventKey="annual">Hàng năm</Nav.Link>
                                             </Nav.Item>
-                                            <Nav.Item onClick={() => this.handle_change_repeat('option')}>
+                                            <Nav.Item onClick={() => { 
+                                                toast.dismiss();
+                                                toast.error('Tính năng sắp ra mắt.');
+                                            }}>
                                                 <Nav.Link eventKey="option">Tùy chỉnh</Nav.Link>
                                             </Nav.Item>
                                         </Nav>
@@ -754,7 +757,7 @@ class ModalShowTodo extends Component {
                                     className="_work_modal_items_content"
                                     onClick={() => {
                                         toast.dismiss();
-                                        toast.error('Tính năng đang bảo trì.');
+                                        toast.error('Tính năng sắp ra mắt.');
                                     }}
                                 >
                                     <div className="_work_modal_items_title">Thêm tệp</div>

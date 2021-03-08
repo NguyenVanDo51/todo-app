@@ -185,6 +185,7 @@ class ListTodo extends Component {
 
         return (
             <>
+                {/* { is_show_nav_left && <div className="work_content_background" /> } */}
                 <div className={is_show_nav_left ? 'work_list' : 'work_list hide'}>
                     <Nav className="flex-column">
                         <Nav.Item onClick={() => this.change_show_list_todo('task', 'Tất cả công việc')}>

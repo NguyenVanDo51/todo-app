@@ -102,6 +102,10 @@ class FormLogin extends Component {
         e.preventDefault();
     };
 
+    // componentDidMount() {
+    //     alert('Bạn có thể đăng ký hoặc dùng tài khoản sẵn có. Load lại trang sẽ làm mới thông tin đăng nhập');
+    // }
+
     render() {
         const { inputs, option, loading } = this.state;
 
